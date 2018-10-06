@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>City-Bike-or-Bus</title>
+    <link rel='stylesheet' href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.css' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="landing">
+        <header role="banner">
+            <h1>City-Bike-or-Bus</h1>
+            <h3>Locate your nearest bike stations and bus stops</h3>
+        </header>
+        <form id="query">
+            <button>Show my Current Location</button>
+            <p>or</p>
+            <input type="text" name="location" id="location" placeholder="Enter address or building">
+            <input type="submit">
+        </form>
+    </div>
+    <main role="main">
+        <section>
+            <div id="map" class="map"></div>
+        </section>
+        <section class="listings">
+            <ul>
+                <li>
+                    <div class=listing>
+                        <h3 class="list-title">Bike Station #1</h3>
+                    </div>
+                    <div class="get-directions">
+                        <a href="">Get Directions</a>
+                    </div>
+                </li>
+                <li>
+                    <div class=listing>
+                        <h3 class="list-title">Bike Station #2</h3>
+                    </div>
+                    <div class="get-directions">
+                        <a href="">Get Directions</a>
+                    </div>
+                </li>
+                <li>
+                    <div class=listing>
+                        <h3 class="list-title">Bus Stop #1</h3>
+                    </div>
+                    <div class="get-directions">
+                        <a href="">Get Directions</a>
+                    </div>
+                </li>
+                <li>
+                    <div class=listing>
+                        <h3 class="list-title">Bus Stop #2</h3>
+                    </div>
+                    <div class="get-directions">
+                        <a href="">Get Directions</a>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </main>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.js'></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
