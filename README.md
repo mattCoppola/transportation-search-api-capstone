@@ -5,7 +5,7 @@
     As a user I want to load the app and show my current location
     As a user I want to also be able to enter a different location to find the nearest bike stations and bus stops
     As a user I want to see the nearest bike stations and bus stops as the app loads my location
-    As a user I want to click on map marker to display more information about the stop/station
+    As a user I want to click on a map marker to display more information about the stop/station
     As a user I want to be able to select my mode of transportation and search for my destination to receive travel itinerary
 ## wire frames
     Diagrams - hand drawn
