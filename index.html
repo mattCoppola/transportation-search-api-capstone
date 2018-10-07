@@ -17,7 +17,7 @@
             <h3>Find public transportation, wherever you are</h3>
         </header>
         <form id="query">
-            <button>Show Current Location</button>
+            <button class="currentLocation">Show Current Location</button>
             <p>or</p>
             <input type="text" name="location" id="location" placeholder="Enter address or landmark">
             <input type="submit">
@@ -26,59 +26,8 @@
     <main role="main">
         <section>
             <div id="map" class="map"></div>
-<!--
-<div class="bus-marker">
-    <ul>
-        <li>Bus Name</li>
-        <li>Operator</li>
-        <li>Route #</li>
-        <li>Wheelchair Accessible</li>
-    </ul>
-</div>
-<div class="bike-marker">
-    <ul>
-        <li>Bike System</li>
-        <li>Bike Name</li>
-        <li>Bikes Available</li>
-        <li>Docks Available</li>
-    </ul>
-</div>-->
         </section>
         <section class="listings">
-            <ul>
-                <li>
-                    <div class=listing>
-                        <h3 class="list-title">Bike Station #1</h3>
-                    </div>
-                    <div class="get-directions">
-                        <a href="">Get Directions</a>
-                    </div>
-                </li>
-                <li>
-                    <div class=listing>
-                        <h3 class="list-title">Bike Station #2</h3>
-                    </div>
-                    <div class="get-directions">
-                        <a href="">Get Directions</a>
-                    </div>
-                </li>
-                <li>
-                    <div class=listing>
-                        <h3 class="list-title">Bus Stop #1</h3>
-                    </div>
-                    <div class="get-directions">
-                        <a href="">Get Directions</a>
-                    </div>
-                </li>
-                <li>
-                    <div class=listing>
-                        <h3 class="list-title">Bus Stop #2</h3>
-                    </div>
-                    <div class="get-directions">
-                        <a href="">Get Directions</a>
-                    </div>
-                </li>
-            </ul>
         </section>
     </main>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.js'></script>
