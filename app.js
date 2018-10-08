@@ -3,17 +3,19 @@ const busURL = 'https://transit.land/api/v1/stops.geojson';
 let currentLat = '';
 let currentLong = '';
 
-$('.currentLocation').on('click', function () {
-    event.preventDefault();
-    console.log('clicked!');
-    $('.landing').hide();
-    $('#map').css('opacity', '1');
-    getBusData(currentLat, currentLong, displayBusAPI);
-});
+// Listen for Show Current Location Button Click
+function currentLocationClicked() {
+    $('.currentLocation').on('click', function () {
+        event.preventDefault();
+        $('.landing').hide();
+        $('#map').css('opacity', '1');
+        getBusData(currentLat, currentLong, displayBusAPI);
+    });
+}
 
+// Add Bus icons to map
 function displayBusAPI(data) {
     console.log(data);
-    console.log(data.features[0].properties.name);
     displayBusListings(data);
     // Add the data to your map as a layer
     map.addLayer({
@@ -29,8 +31,26 @@ function displayBusAPI(data) {
             'icon-allow-overlap': true,
         }
     });
+    // set markers at time of rendering - this needs to be pulled out of this function and added as a separate function
+    data.features.forEach(function (marker) {
+
+        // create a HTML element for each feature
+        var el = document.createElement('div');
+        el.className = 'marker';
+
+        // make a marker for each feature and add to the map
+        new mapboxgl.Marker(el)
+            .setLngLat(marker.geometry.coordinates)
+            .setPopup(new mapboxgl.Popup({
+                    offset: 25
+                }) // add popups
+                .setHTML('<h3>' + marker.properties.name + '</h3><p>' + marker.properties.routes_serving_stop[0].operator_name + '</p><p>Route # : ' + marker.properties.routes_serving_stop[0].route_name + '</p><p>Wheelchair: ' + marker.properties.wheelchair_boarding + '</p>'))
+            .addTo(map);
+    });
+
 }
 
+// API CALL TO TRANSIT LAND (For Bus Data)
 function getBusData(lat, lon, callback) {
     let query = {
         lat: `${currentLat}`,
@@ -50,12 +70,15 @@ function getBusData(lat, lon, callback) {
         });
 }
 
-function renderBusListings(listing) {
+function renderBusListings(listing, index) {
     return `
             <li>
-            <div class=listing>
+            <div class=listing data-id=${index}>
             <h3 class="list-title">${listing.properties.name}</h3>
+            <div class="list-details"><p>Operator: ${listing.properties.routes_serving_stop[0].operator_name}</p>
+            <p>Route: ${listing.properties.routes_serving_stop[0].route_name}</p>
             <p>${listing.properties.tags.stop_desc}</p>
+            </div>
             </div>
             <div class="get-directions">
             <a href="">Get Directions</a>
@@ -65,10 +88,48 @@ function renderBusListings(listing) {
 }
 
 function displayBusListings(data) {
-    let results = data.features.map((listing, index) => renderBusListings(listing))
-    console.log(results);
+    let results = data.features.map((listing, index) => renderBusListings(listing, index))
     $('.listings').html('<ul>' + results.join('') + '</ul>');
+    $('.listings').css('visibility', 'visible');
+    showListDetails();
+    flyToStore(data);
 }
+
+//Fly to store when listing is clicked
+function flyToStore(data) {
+    $('.listing').click(function () {
+        let clickedListing = data.features[this.dataset.id];
+        map.flyTo({
+            center: clickedListing.geometry.coordinates,
+            zoom: 20
+        });
+        createPopUp(clickedListing);
+    });
+}
+
+// Create Popup while flying to store
+function createPopUp(clickedListing) {
+    var popUps = document.getElementsByClassName('mapboxgl-popup');
+    // Check if there is already a popup on the map and if so, remove it
+    if (popUps[0]) popUps[0].remove();
+    var popup = new mapboxgl.Popup({
+            closeOnClick: false
+        })
+        .setLngLat(clickedListing.geometry.coordinates)
+        .setHTML('<h3>' + clickedListing.properties.name + '</h3><p>' + clickedListing.properties.routes_serving_stop[0].operator_name + '</p><p>Route # : ' + clickedListing.properties.routes_serving_stop[0].route_name + '</p><p>Wheelchair: ' + clickedListing.properties.wheelchair_boarding + '</p>')
+        .addTo(map);
+}
+
+
+// Show/Hide List Details on-click
+function showListDetails() {
+    $('.list-title').click(function () {
+        $(this).next('.list-details').slideToggle();
+    });
+}
+
+
+// MAPBOX - INITIALIZE AND GEOLOCATE CURRENT LAT/LONG
 // map initialize and geolocate
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dGNvcHBvbGEiLCJhIjoiY2ptb3ZsdmFuMTh1YTNrbWowa3gzZm82ZiJ9.S7EhnqCwmFeZmy-obXH41g';
@@ -110,3 +171,6 @@ function error(err) {
 }
 
 navigator.geolocation.getCurrentPosition(success, error, options);
+
+
+$(currentLocationClicked);
