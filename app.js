@@ -3,6 +3,13 @@ const busURL = 'https://transit.land/api/v1/stops.geojson';
 let currentLat = '41.8781';
 let currentLong = '-87.6298';
 
+// Error Handler - Message Display
+function displayError(message) {
+    $("#messageBox span").html(message);
+    $("#messageBox").fadeIn();
+    $("#messageBox").fadeOut(8000);
+};
+
 // Listen for Show Current Location Button Click
 function currentLocationClicked() {
     $('.currentLocation').on('click', function () {
@@ -36,6 +43,7 @@ function displayBusAPI(data) {
     console.log(data);
     if (!data.features.length) {
         console.log("no results!!!");
+        displayError('No Data Available.  Search another location');
     } else {
         $('.landing').hide();
         $('#map').css('opacity', '1');
@@ -130,6 +138,7 @@ function flyToStore(data) {
         let clickedListing = data.features[this.dataset.id];
         map.flyTo({
             center: clickedListing.geometry.coordinates,
+            speed: 1.8,
             zoom: 20
         });
         createPopUp(clickedListing);

@@ -28,6 +28,19 @@ input {
     text-align: center;
 }
 
+/*Message Box Styling*/
+.messages {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: yellow;
+    text-align: center;
+    font-size: .8em;
+    padding: 1.5em;
+    border-radius: 5px;
+}
+
 header {
     margin-top: 10em;
 }
@@ -128,6 +141,10 @@ geocoder {
 @media only screen and (min-width: 480px) {
     body {
         position: relative;
+    }
+
+    .messages {
+        font-size: 1.2em;
     }
 
     .landing {
