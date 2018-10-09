@@ -125,8 +125,49 @@ geocoder {
 
 /*MEDIA QUERIES*/
 
-@media (min-width: 720px) {
-    /*
+@media only screen and (min-width: 480px) {
+    body {
+        position: relative;
+    }
+
+    .landing {
+        font-size: .7em;
+        bottom: 15%;
+    }
+
+    .listings {
+        position: relative;
+        /*        top: 8%;*/
+        height: 100%;
+        width: 30%;
+        float: left;
+
+    }
+
+    #map {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        float: right;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .landing {
+        font-size: 1em;
+    }
+
+    header {
+        margin-top: 20em;
+    }
+}
+
+/*
+
+@media only screen and (min-width: 720px) {
+
     header h1 {
         position: absolute;
         top: 0;
@@ -138,8 +179,6 @@ geocoder {
         border: 1px solid black;
         visibility: visible;
     }
-*/
-
     .listings {
         position: relative;
         top: 8%;
@@ -158,10 +197,4 @@ geocoder {
         float: right;
     }
 }
-
-
-@media (max-width: 400px) {
-    input#location {
-        font-size: .8em;
-    }
-}
+*/
