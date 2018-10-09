@@ -1,6 +1,6 @@
 // Declare Global Variables
 const busURL = 'https://transit.land/api/v1/stops.geojson';
-let currentLat = '41.8781';
+let currentLat = '41.8781'; //center on Chicago on App Load
 let currentLong = '-87.6298';
 
 // Error Handler - Message Display
@@ -10,33 +10,31 @@ function displayError(message) {
     $("#messageBox").fadeOut(8000);
 };
 
-// Listen for Show Current Location Button Click
-function currentLocationClicked() {
-    $('.currentLocation').on('click', function () {
-        event.preventDefault();
-        //        $('.landing').hide();
-        //        $('#map').css('opacity', '1');
-        getBusData(currentLat, currentLong, displayBusAPI);
-        map.flyTo({
-            center: [
+// Listen for 'Show Current Location' Button Click
+$('.currentLocation').on('click', function () {
+    event.preventDefault();
+    //        $('.landing').hide();
+    //        $('#map').css('opacity', '1');
+    getBusData(currentLat, currentLong, displayBusAPI);
+    map.flyTo({
+        center: [
                 currentLong,
                 currentLat],
-            zoom: 16
-        });
+        zoom: 16
     });
-}
+});
+
 
 // reset Map and return to Landing Page
-function resetMap() {
-    $('.reset').on('click', function () {
-        console.log('reset clicked!');
-        $('.landing').show();
-        $('#map').css('opacity', '1');
-        $('.listings').html('').css('visibility', 'hidden');
-        map.removeLayer('busses');
-        map.removeSource('busses');
-    });
-}
+$('.reset').on('click', function () {
+    console.log('reset clicked!');
+    $('.landing').show();
+    $('#map').css('opacity', '1');
+    $('.listings').html('').css('visibility', 'hidden');
+    map.removeLayer('busses');
+    map.removeSource('busses');
+});
+
 
 // Add Bus icons to map and setMarkers
 function displayBusAPI(data) {
@@ -107,6 +105,7 @@ function getBusData(lat, lon, callback) {
         });
 }
 
+// Render HTML for Bus listings container
 function renderBusListings(listing, index) {
     return `
             <li>
@@ -124,6 +123,7 @@ function renderBusListings(listing, index) {
         `;
 }
 
+// Display Bus Listings to HTML
 function displayBusListings(data) {
     let results = data.features.map((listing, index) => renderBusListings(listing, index))
     $('.listings').html('<ul>' + results.join('') + '</ul>');
@@ -178,6 +178,8 @@ map = new mapboxgl.Map({
     zoom: 10 // starting zoom
 });
 
+map.addControl(new mapboxgl.NavigationControl());
+
 map.addControl(new mapboxgl.GeolocateControl({
     positionOptions: {
         enableHighAccuracy: true
@@ -230,6 +232,3 @@ function error(err) {
 }
 
 navigator.geolocation.getCurrentPosition(success, error, options);
-
-$(currentLocationClicked);
-$(resetMap);
