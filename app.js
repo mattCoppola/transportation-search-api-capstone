@@ -1,7 +1,7 @@
 // Declare Global Variables
 const busURL = 'https://transit.land/api/v1/stops.geojson';
-let currentLat = '';
-let currentLong = '';
+let currentLat = '41.8781';
+let currentLong = '-87.6298';
 
 // Listen for Show Current Location Button Click
 function currentLocationClicked() {
@@ -165,8 +165,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dGNvcHBvbGEiLCJhIjoiY2ptb3ZsdmFuMTh1YTNrb
 map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
-    center: [-87.7191804, 41.923792], // starting position [lng, lat]
-    zoom: 16 // starting zoom
+    center: [currentLong, currentLat], // starting position [lng, lat]
+    zoom: 10 // starting zoom
 });
 
 map.addControl(new mapboxgl.GeolocateControl({
