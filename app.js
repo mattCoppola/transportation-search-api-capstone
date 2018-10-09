@@ -42,6 +42,8 @@ function displayBusAPI(data) {
     if (!data.features.length) {
         console.log("no results!!!");
         displayError('No Data Available.  Search another location');
+        map.removeLayer('busses');
+        map.removeSource('busses');
     } else {
         $('.landing').hide();
         $('#map').css('opacity', '1');

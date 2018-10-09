@@ -28,6 +28,17 @@ input {
     text-align: center;
 }
 
+#fieldsetAccess legend {
+    position: absolute;
+    left: -5000px;
+}
+
+#fieldsetAccess {
+    border: 0;
+    padding: 0;
+    margin-left: 0px;
+}
+
 /*Message Box Styling*/
 .messages {
     position: fixed;
