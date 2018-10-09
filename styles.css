@@ -58,7 +58,11 @@ input#location {
     margin-bottom: 20px;
 }
 
-
+.reset {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+}
 
 #map {
     position: absolute;
@@ -103,6 +107,20 @@ input#location {
     border-radius: 50%;
     cursor: pointer;
 }
+
+geocoder {
+    position: absolute;
+    z-index: 1;
+    width: 50%;
+    left: 50%;
+    margin-left: -25%;
+    top: 20px;
+}
+
+.mapboxgl-ctrl-geocoder {
+    min-width: 100%;
+}
+
 
 /*MEDIA QUERIES*/
 

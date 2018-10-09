@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>City-Bike-or-Bus</title>
     <link rel='stylesheet' href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.css' />
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.css' type='text/css' />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css" />
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -19,8 +20,12 @@
         <form id="query">
             <button class="currentLocation">Show Current Location</button>
             <p>or</p>
+            <p>Enter an Address or Landmark</p>
+            <div id='geocoder' class='geocoder'></div>
+            <!--
             <input type="text" name="location" id="location" placeholder="Enter address or landmark">
             <input type="submit">
+-->
         </form>
     </div>
     <main role="main">
@@ -28,9 +33,13 @@
             <div id="map" class="map"></div>
         </section>
         <section class="listings">
+            <ul>
+            </ul>
         </section>
+        <button class="reset">Reset Map</button>
     </main>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.49.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js'></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="app.js"></script>
 </body>

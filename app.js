@@ -7,31 +7,60 @@ let currentLong = '';
 function currentLocationClicked() {
     $('.currentLocation').on('click', function () {
         event.preventDefault();
-        $('.landing').hide();
-        $('#map').css('opacity', '1');
+        //        $('.landing').hide();
+        //        $('#map').css('opacity', '1');
         getBusData(currentLat, currentLong, displayBusAPI);
+        map.flyTo({
+            center: [
+                currentLong,
+                currentLat],
+            zoom: 16
+        });
     });
 }
 
-// Add Bus icons to map
+// reset Map and return to Landing Page
+function resetMap() {
+    $('.reset').on('click', function () {
+        console.log('reset clicked!');
+        $('.landing').show();
+        $('#map').css('opacity', '1');
+        $('.listings').html('').css('visibility', 'hidden');
+        map.removeLayer('busses');
+        map.removeSource('busses');
+    });
+}
+
+// Add Bus icons to map and setMarkers
 function displayBusAPI(data) {
     console.log(data);
-    displayBusListings(data);
-    // Add the data to your map as a layer
-    map.addLayer({
-        id: 'busses',
-        type: 'symbol',
-        // Add a GeoJSON source containing place coordinates and information.
-        source: {
-            type: 'geojson',
-            data: data,
-        },
-        layout: {
-            'icon-image': 'bus-15', //https://github.com/mapbox/maki/tree/master/icons
-            'icon-allow-overlap': true,
-        }
-    });
-    // set markers at time of rendering - this needs to be pulled out of this function and added as a separate function
+    if (!data.features.length) {
+        console.log("no results!!!");
+    } else {
+        $('.landing').hide();
+        $('#map').css('opacity', '1');
+        displayBusListings(data);
+        // Add the data to your map as a layer
+        map.addLayer({
+            id: 'busses',
+            type: 'symbol',
+            // Add a GeoJSON source containing place coordinates and information.
+            source: {
+                type: 'geojson',
+                data: data,
+            },
+            layout: {
+                'icon-image': 'bus-15', //https://github.com/mapbox/maki/tree/master/icons
+                'icon-allow-overlap': true,
+            }
+        });
+
+        setMarkers(data);
+    }
+}
+
+// set markers at time of rendering
+function setMarkers(data) {
     data.features.forEach(function (marker) {
 
         // create a HTML element for each feature
@@ -53,8 +82,8 @@ function displayBusAPI(data) {
 // API CALL TO TRANSIT LAND (For Bus Data)
 function getBusData(lat, lon, callback) {
     let query = {
-        lat: `${currentLat}`,
-        lon: `${currentLong}`,
+        lat: `${lat}`,
+        lon: `${lon}`,
         r: '500',
         total: 'true'
     }
@@ -130,10 +159,10 @@ function showListDetails() {
 
 
 // MAPBOX - INITIALIZE AND GEOLOCATE CURRENT LAT/LONG
-// map initialize and geolocate
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dGNvcHBvbGEiLCJhIjoiY2ptb3ZsdmFuMTh1YTNrbWowa3gzZm82ZiJ9.S7EhnqCwmFeZmy-obXH41g';
-var map = new mapboxgl.Map({
+
+map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
     center: [-87.7191804, 41.923792], // starting position [lng, lat]
@@ -146,6 +175,27 @@ map.addControl(new mapboxgl.GeolocateControl({
     },
     trackUserLocation: true
 }));
+
+
+var geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken
+});
+
+document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+// grab coordinates of entered address/landmark
+geocoder.on('result', function (ev) {
+    if (typeof mapLayer !== 'undefined') {
+        // Remove map layer & source.
+        map.removeLayer('busses').removeSource('busses');
+    }
+    map.getSource('single-point');
+    let coord = (ev.result.geometry);
+    let long = coord.coordinates[0];
+    let lat = coord.coordinates[1];
+    getBusData(lat, long, displayBusAPI);
+});
+
 
 // get current position lat and longitude
 
@@ -172,5 +222,5 @@ function error(err) {
 
 navigator.geolocation.getCurrentPosition(success, error, options);
 
-
 $(currentLocationClicked);
+$(resetMap);
