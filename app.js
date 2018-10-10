@@ -1,5 +1,6 @@
 // Declare Global Variables
 const busURL = 'https://transit.land/api/v1/stops.geojson';
+const bikeURL = 'https://api.coord.co/v1/sv/location';
 let currentLat = '41.8781'; //center on Chicago on App Load
 let currentLong = '-87.6298';
 
@@ -16,6 +17,7 @@ $('.currentLocation').on('click', function () {
     //        $('.landing').hide();
     //        $('#map').css('opacity', '1');
     getBusData(currentLat, currentLong, displayBusAPI);
+    getBikeData(currentLat, currentLong, displayBikeAPI);
     map.flyTo({
         center: [
                 currentLong,
@@ -31,19 +33,68 @@ $('.reset').on('click', function () {
     $('.landing').show();
     $('#map').css('opacity', '1');
     $('.listings').html('').css('visibility', 'hidden');
-    map.removeLayer('busses');
-    map.removeSource('busses');
+    if (map.getLayer('busses')) {
+        map.removeLayer('busses');
+    };
+    if (map.getSource('busses')) {
+        map.removeSource('busses');
+    };
 });
 
+function displayBikeAPI(data) {
+    console.log(data);
+    $('.landing').hide();
+    $('#map').css('opacity', '1');
+    //******ADD displayBikeListings here once created!!!!
+    //    displayBusListings(data);
+    // Add the data to your map as a layer
+    map.addLayer({
+        id: 'bikes',
+        type: 'symbol',
+        // Add a GeoJSON source containing place coordinates and information.
+        source: {
+            type: 'geojson',
+            data: data,
+        },
+        layout: {
+            'icon-image': 'bicycle-15', //https://github.com/mapbox/maki/tree/master/icons
+            'icon-allow-overlap': true,
+        }
+    });
+}
+// ************** BIKE FUNCTIONS ************** //
+function getBikeData(lat, lon, callback) {
+    let query = {
+        access_key: 'liETJic1H2dGU29EVfgqfA9SyWR6kjgJjRgzQtO_4AU',
+        radius_km: 1,
+        latitude: lat,
+        longitude: lon
+    }
+    $.getJSON(bikeURL, query, function () {
+            console.log('Bike API starting...');
+        })
+        .done(callback)
+        .fail(function () {
+            console.log('error');
+        })
+        .always(function () {
+            console.log('Bike API complete');
+        })
+}
 
+// ************** BUS FUNCTIONS ************** //
 // Add Bus icons to map and setMarkers
 function displayBusAPI(data) {
     console.log(data);
     if (!data.features.length) {
         console.log("no results!!!");
         displayError('No Data Available.  Search another location');
-        map.removeLayer('busses');
-        map.removeSource('busses');
+        if (map.getLayer('busses')) {
+            map.removeLayer('busses');
+        };
+        if (map.getSource('busses')) {
+            map.removeSource('busses');
+        };
     } else {
         $('.landing').hide();
         $('#map').css('opacity', '1');
@@ -198,14 +249,14 @@ document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
 // grab coordinates of entered address/landmark
 geocoder.on('result', function (ev) {
-    if (typeof mapLayer !== 'undefined') {
-        // Remove map layer & source.
-        map.removeLayer('busses').removeSource('busses');
-    }
+    let first = $('.mapboxgl-ctrl-geocoder input:first').val();
+    console.log(first);
     map.getSource('single-point');
     let coord = (ev.result.geometry);
+    console.log(coord);
     let long = coord.coordinates[0];
     let lat = coord.coordinates[1];
+    $('.mapboxgl-ctrl-geocoder input').val('');
     getBusData(lat, long, displayBusAPI);
 });
 
