@@ -3,6 +3,8 @@ const busURL = 'https://transit.land/api/v1/stops.geojson';
 const bikeURL = 'https://api.coord.co/v1/sv/location';
 let currentLat = '41.8781'; //center on Chicago on App Load
 let currentLong = '-87.6298';
+let busLayer = 'busses';
+let bikeLayer = 'bikes';
 
 // Error Handler - Message Display
 function displayError(message) {
@@ -16,6 +18,8 @@ $('.currentLocation').on('click', function () {
     event.preventDefault();
     //        $('.landing').hide();
     //        $('#map').css('opacity', '1');
+    removeBikeLayers();
+    removeBusLayers();
     getBusData(currentLat, currentLong, displayBusAPI);
     getBikeData(currentLat, currentLong, displayBikeAPI);
     map.flyTo({
@@ -31,43 +35,60 @@ $('.reset').on('click', function () {
     console.log('reset clicked!');
     $('.landing').show();
     $('#map').css('opacity', '1');
-    $('.listings').html('').css('visibility', 'hidden');
-    if (map.getLayer('busses')) {
-        map.removeLayer('busses');
-    };
-    if (map.getSource('busses')) {
-        map.removeSource('busses');
-    };
-    if (map.getLayer('bikes')) {
-        map.removeLayer('bikes');
-    };
-    if (map.getSource('bikes')) {
-        map.removeSource('bikes');
-    };
+    $('.listings').css('visibility', 'hidden');
+    $('.bus-listings').html('');
+    $('.bike-listings').html('');
+    removeBikeLayers();
+    removeBusLayers();
+    //    if (map.getLayer('busses')) {
+    //        map.removeLayer('busses');
+    //    };
+    //    if (map.getSource('busses')) {
+    //        map.removeSource('busses');
+    //    };
+    //    if (map.getLayer('bikes')) {
+    //        map.removeLayer('bikes');
+    //    };
+    //    if (map.getSource('bikes')) {
+    //        map.removeSource('bikes');
+    //};
 });
 
 // ************** BIKE FUNCTIONS ************** //
 // Add Bike icons to map and setBusMarkers
 function displayBikeAPI(data) {
     console.log(data);
-    $('.landing').hide();
-    $('#map').css('opacity', '1');
-    displayBikeListings(data);
-    // Add the data to your map as a layer
-    map.addLayer({
-        id: 'bikes',
-        type: 'symbol',
-        // Add a GeoJSON source containing place coordinates and information.
-        source: {
-            type: 'geojson',
-            data: data,
-        },
-        layout: {
-            'icon-image': 'bicycle-15', //https://github.com/mapbox/maki/tree/master/icons
-            'icon-allow-overlap': true,
-        }
-    });
-    setBikeMarkers(data);
+    if (data.features === null) {
+        console.log("no Bike results!!!");
+        displayError('No Bike Data Available.  Search another location');
+        removeBikeLayers();
+        //        if (map.getLayer('bikes')) {
+        //            map.removeLayer('bikes');
+        //        };
+        //        if (map.getSource('bikes')) {
+        //            map.removeSource('bikes');
+        //        };
+    } else {
+        $('.landing').hide();
+        $('#map').css('opacity', '1');
+        displayBikeListings(data);
+        // Add the data to your map as a layer
+        removeBikeLayers();
+        map.addLayer({
+            id: 'bikes',
+            type: 'symbol',
+            // Add a GeoJSON source containing place coordinates and information.
+            source: {
+                type: 'geojson',
+                data: data,
+            },
+            layout: {
+                'icon-image': 'bicycle-15', //https://github.com/mapbox/maki/tree/master/icons
+                'icon-allow-overlap': true,
+            }
+        });
+        setBikeMarkers(data);
+    }
 }
 
 // set Bike markers at time of rendering
@@ -158,17 +179,19 @@ function displayBusAPI(data) {
     if (!data.features.length) {
         console.log("no Bus results!!!");
         displayError('No Bus Data Available.  Search another location');
-        if (map.getLayer('busses')) {
-            map.removeLayer('busses');
-        };
-        if (map.getSource('busses')) {
-            map.removeSource('busses');
-        };
+        removeBusLayers();
+        //        if (map.getLayer('busses')) {
+        //            map.removeLayer('busses');
+        //        };
+        //        if (map.getSource('busses')) {
+        //            map.removeSource('busses');
+        //        };
     } else {
         $('.landing').hide();
         $('#map').css('opacity', '1');
         displayBusListings(data);
         // Add the data to your map as a layer
+        removeBusLayers();
         map.addLayer({
             id: 'busses',
             type: 'symbol',
@@ -200,7 +223,7 @@ function setBusMarkers(data) {
             .setPopup(new mapboxgl.Popup({
                     offset: 25
                 }) // add popups
-                .setHTML('<h3>' + marker.properties.name + '</h3><p>' + marker.properties.routes_serving_stop[0].operator_name + '</p><p>Route # : ' + marker.properties.routes_serving_stop[0].route_name + '</p><p>Wheelchair: ' + marker.properties.wheelchair_boarding + '</p>'))
+                .setHTML('<h3>' + marker.properties.name + '</h3><p>' + marker.properties.operators_serving_stop[0].operator_name + '</p><p>Route # : ' + marker.properties.operators_serving_stop[0].route_name + '</p><p>Wheelchair: ' + marker.properties.wheelchair_boarding + '</p>'))
             .addTo(map);
     });
 
@@ -228,12 +251,16 @@ function getBusData(lat, lon, callback) {
 
 // Render HTML for Bus listings container
 function renderBusListings(listing, index) {
-    return `
+    if (listing.properties.operators_serving_stop[0] === undefined) {
+        console.log('operators serving stop is blank...skipping...')
+        console.error(TypeError);
+    } else {
+        return `
             <li>
             <div class=bus-listing data-id=${index}>
             <h3 class="bus-list-title">${listing.properties.name}</h3>
-            <div class="bus-list-details"><p>Operator: ${listing.properties.routes_serving_stop[0].operator_name}</p>
-            <p>Route: ${listing.properties.routes_serving_stop[0].route_name}</p>
+            <div class="bus-list-details"><p>Operator: ${listing.properties.operators_serving_stop[0].operator_name}</p>
+            <p>Route: ${listing.properties.operators_serving_stop[0].route_name}</p>
             <p>${listing.properties.tags.stop_desc}</p>
             </div>
             </div>
@@ -242,6 +269,7 @@ function renderBusListings(listing, index) {
             </div>
             </li>
         `;
+    }
 }
 
 // Display Bus Listings to HTML
@@ -335,6 +363,8 @@ document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
 // grab coordinates of entered address/landmark
 geocoder.on('result', function (ev) {
+    removeBikeLayers();
+    removeBusLayers();
     let first = $('.mapboxgl-ctrl-geocoder input:first').val();
     console.log(first);
     map.getSource('single-point');
@@ -344,6 +374,7 @@ geocoder.on('result', function (ev) {
     let lat = coord.coordinates[1];
     $('.mapboxgl-ctrl-geocoder input').val('');
     getBusData(lat, long, displayBusAPI);
+    getBikeData(lat, long, displayBikeAPI);
 });
 
 
@@ -368,6 +399,26 @@ function success(pos) {
 
 function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+function removeBikeLayers() {
+    console.log('removing bike layer: ' + bikeLayer)
+    if (map.getLayer(bikeLayer)) {
+        map.removeLayer(bikeLayer);
+    };
+    if (map.getSource(bikeLayer)) {
+        map.removeSource(bikeLayer);
+    };
+}
+
+function removeBusLayers() {
+    console.log('removing bus layer: ' + busLayer)
+    if (map.getLayer(busLayer)) {
+        map.removeLayer(busLayer);
+    };
+    if (map.getSource(busLayer)) {
+        map.removeSource(busLayer);
+    };
 }
 
 navigator.geolocation.getCurrentPosition(success, error, options);
