@@ -123,7 +123,8 @@ input#location {
     border-bottom: 1px solid black;
 }
 
-.list-details {
+.bus-list-details,
+.bike-list-details {
     display: none;
 }
 

@@ -26,7 +26,6 @@ $('.currentLocation').on('click', function () {
     });
 });
 
-
 // reset Map and return to Landing Page
 $('.reset').on('click', function () {
     console.log('reset clicked!');
@@ -39,14 +38,21 @@ $('.reset').on('click', function () {
     if (map.getSource('busses')) {
         map.removeSource('busses');
     };
+    if (map.getLayer('bikes')) {
+        map.removeLayer('bikes');
+    };
+    if (map.getSource('bikes')) {
+        map.removeSource('bikes');
+    };
 });
 
+// ************** BIKE FUNCTIONS ************** //
+// Add Bike icons to map and setBusMarkers
 function displayBikeAPI(data) {
     console.log(data);
     $('.landing').hide();
     $('#map').css('opacity', '1');
-    //******ADD displayBikeListings here once created!!!!
-    //    displayBusListings(data);
+    displayBikeListings(data);
     // Add the data to your map as a layer
     map.addLayer({
         id: 'bikes',
@@ -61,8 +67,30 @@ function displayBikeAPI(data) {
             'icon-allow-overlap': true,
         }
     });
+    setBikeMarkers(data);
 }
-// ************** BIKE FUNCTIONS ************** //
+
+// set Bike markers at time of rendering
+function setBikeMarkers(data) {
+    data.features.forEach(function (marker) {
+
+        // create a HTML element for each feature
+        var el = document.createElement('div');
+        el.className = 'marker';
+
+        // make a marker for each feature and add to the map
+        new mapboxgl.Marker(el)
+            .setLngLat(marker.geometry.coordinates)
+            .setPopup(new mapboxgl.Popup({
+                    offset: 25
+                }) // add popups
+                .setHTML('<h3>' + marker.properties.system_id + '</h3><p>' + marker.properties.name + '</p><p>Bikes Available: ' + marker.properties.num_bikes_available + '</p><p>Docks Available: ' + marker.properties.num_docks_available + '</p>'))
+            .addTo(map);
+    });
+
+}
+
+// API CALL TO Coord (For Bike Data)
 function getBikeData(lat, lon, callback) {
     let query = {
         access_key: 'liETJic1H2dGU29EVfgqfA9SyWR6kjgJjRgzQtO_4AU',
@@ -82,13 +110,54 @@ function getBikeData(lat, lon, callback) {
         })
 }
 
+// Render HTML for Bike listings container
+function renderBikeListings(listing, index) {
+    return `
+        <li>
+        <div class=bike-listing data-id=${index}>
+        <h3 class="bike-list-title">${listing.properties.name}</h3>
+        <div class="bike-list-details"><p>Operator: ${listing.properties.name}</p>
+        <p>Operator: ${listing.properties.system_id}</p>
+        <p>Bikes Available: ${listing.properties.num_bikes_available}</p>
+        <p>Docks Available: ${listing.properties.num_docks_available}</p>
+        </div>
+        </div>
+        <div class="get-directions">
+        <a href="">Get Directions</a>
+        </div>
+        </li>
+        `;
+}
+
+// Display Bike Listings to HTML
+function displayBikeListings(data) {
+    let bikeResults = data.features.map((listing, index) => renderBikeListings(listing, index))
+    $('.bike-listings').html('<ul>' + bikeResults.join('') + '</ul>');
+    $('.listings').css('visibility', 'visible');
+    showBikeListDetails();
+    flyToBike(data);
+}
+
+//Fly to bike when listing is clicked
+function flyToBike(data) {
+    $('.bike-listing').click(function () {
+        let clickedListing = data.features[this.dataset.id];
+        map.flyTo({
+            center: clickedListing.geometry.coordinates,
+            speed: 1.8,
+            zoom: 20
+        });
+        createBikePopUp(clickedListing);
+    });
+}
+
 // ************** BUS FUNCTIONS ************** //
-// Add Bus icons to map and setMarkers
+// Add Bus icons to map and setBusMarkers
 function displayBusAPI(data) {
     console.log(data);
     if (!data.features.length) {
-        console.log("no results!!!");
-        displayError('No Data Available.  Search another location');
+        console.log("no Bus results!!!");
+        displayError('No Bus Data Available.  Search another location');
         if (map.getLayer('busses')) {
             map.removeLayer('busses');
         };
@@ -113,13 +182,12 @@ function displayBusAPI(data) {
                 'icon-allow-overlap': true,
             }
         });
-
-        setMarkers(data);
+        setBusMarkers(data);
     }
 }
 
-// set markers at time of rendering
-function setMarkers(data) {
+// set Bus markers at time of rendering
+function setBusMarkers(data) {
     data.features.forEach(function (marker) {
 
         // create a HTML element for each feature
@@ -162,9 +230,9 @@ function getBusData(lat, lon, callback) {
 function renderBusListings(listing, index) {
     return `
             <li>
-            <div class=listing data-id=${index}>
-            <h3 class="list-title">${listing.properties.name}</h3>
-            <div class="list-details"><p>Operator: ${listing.properties.routes_serving_stop[0].operator_name}</p>
+            <div class=bus-listing data-id=${index}>
+            <h3 class="bus-list-title">${listing.properties.name}</h3>
+            <div class="bus-list-details"><p>Operator: ${listing.properties.routes_serving_stop[0].operator_name}</p>
             <p>Route: ${listing.properties.routes_serving_stop[0].route_name}</p>
             <p>${listing.properties.tags.stop_desc}</p>
             </div>
@@ -179,27 +247,27 @@ function renderBusListings(listing, index) {
 // Display Bus Listings to HTML
 function displayBusListings(data) {
     let results = data.features.map((listing, index) => renderBusListings(listing, index))
-    $('.listings').html('<ul>' + results.join('') + '</ul>');
+    $('.bus-listings').html('<ul>' + results.join('') + '</ul>');
     $('.listings').css('visibility', 'visible');
-    showListDetails();
-    flyToStore(data);
+    showBusListDetails();
+    flyToBus(data);
 }
 
-//Fly to store when listing is clicked
-function flyToStore(data) {
-    $('.listing').click(function () {
+//Fly to bus when listing is clicked
+function flyToBus(data) {
+    $('.bus-listing').click(function () {
         let clickedListing = data.features[this.dataset.id];
         map.flyTo({
             center: clickedListing.geometry.coordinates,
             speed: 1.8,
             zoom: 20
         });
-        createPopUp(clickedListing);
+        createBusPopUp(clickedListing);
     });
 }
 
-// Create Popup while flying to store
-function createPopUp(clickedListing) {
+// Create Bus Popup while flying to store
+function createBusPopUp(clickedListing) {
     var popUps = document.getElementsByClassName('mapboxgl-popup');
     // Check if there is already a popup on the map and if so, remove it
     if (popUps[0]) popUps[0].remove();
@@ -212,13 +280,31 @@ function createPopUp(clickedListing) {
 }
 
 
+// Create Bike Popup while flying to store
+function createBikePopUp(clickedListing) {
+    var popUps = document.getElementsByClassName('mapboxgl-popup');
+    // Check if there is already a popup on the map and if so, remove it
+    if (popUps[0]) popUps[0].remove();
+    var popup = new mapboxgl.Popup({
+            closeOnClick: false
+        })
+        .setLngLat(clickedListing.geometry.coordinates)
+        .setHTML('<h3>' + clickedListing.properties.system_id + '</h3><p>' + clickedListing.properties.name + '</p><p>Bikes Available: ' + clickedListing.properties.num_bikes_available + '</p><p>Docks Available: ' + clickedListing.properties.num_docks_available + '</p>')
+        .addTo(map);
+}
+
 // Show/Hide List Details on-click
-function showListDetails() {
-    $('.list-title').click(function () {
-        $(this).next('.list-details').slideToggle();
+function showBusListDetails() {
+    $('.bus-list-title').click(function () {
+        $(this).next('.bus-list-details').slideToggle();
     });
 }
 
+function showBikeListDetails() {
+    $('.bike-list-title').click(function () {
+        $(this).next('.bike-list-details').slideToggle();
+    });
+}
 
 // MAPBOX - INITIALIZE AND GEOLOCATE CURRENT LAT/LONG
 
