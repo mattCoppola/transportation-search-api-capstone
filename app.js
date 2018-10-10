@@ -8,9 +8,12 @@ let bikeLayer = 'bikes';
 
 // Error Handler - Message Display
 function displayError(message) {
-    $("#messageBox span").html(message);
+    $("#messageBox span").append(message);
     $("#messageBox").fadeIn();
-    $("#messageBox").fadeOut(8000);
+    $("#messageBox").fadeOut(8000)
+    $("#messageBox").queue(function () {
+        $(this).empty().dequeue();
+    });
 };
 
 // Listen for 'Show Current Location' Button Click
@@ -60,7 +63,7 @@ function displayBikeAPI(data) {
     console.log(data);
     if (data.features === null) {
         console.log("no Bike results!!!");
-        displayError('No Bike Data Available.  Search another location');
+        displayError('<p>No Bike Data Available.  Search another location</p>');
         removeBikeLayers();
         //        if (map.getLayer('bikes')) {
         //            map.removeLayer('bikes');
@@ -289,8 +292,8 @@ function flyToBus(data) {
         let clickedListing = data.features[this.dataset.id];
         map.flyTo({
             center: clickedListing.geometry.coordinates,
-            speed: 1.8,
-            zoom: 20
+            speed: 1.3,
+            zoom: 15
         });
         createBusPopUp(clickedListing);
     });
