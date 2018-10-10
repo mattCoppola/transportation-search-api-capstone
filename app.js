@@ -136,6 +136,7 @@ function renderBikeListings(listing, index) {
     return `
         <li>
         <div class=bike-listing data-id=${index}>
+<img class="bike-icon" src="http://simpleicon.com/wp-content/uploads/bicycle.png" alt="Bicycle Image"/>
         <h3 class="bike-list-title">${listing.properties.name}</h3>
         <div class="bike-list-details"><p>Operator: ${listing.properties.name}</p>
         <p>Operator: ${listing.properties.system_id}</p>
@@ -258,6 +259,7 @@ function renderBusListings(listing, index) {
         return `
             <li>
             <div class=bus-listing data-id=${index}>
+            <img class="bike-icon" src="https://image.flaticon.com/icons/svg/61/61985.svg" alt="Bus Image"/>
             <h3 class="bus-list-title">${listing.properties.name}</h3>
             <div class="bus-list-details"><p>Operator: ${listing.properties.operators_serving_stop[0].operator_name}</p>
             <p>Route: ${listing.properties.operators_serving_stop[0].route_name}</p>
@@ -334,13 +336,16 @@ function showBikeListDetails() {
     });
 }
 
+// ************** MAPBOX FUNCTIONS ************** //
 // MAPBOX - INITIALIZE AND GEOLOCATE CURRENT LAT/LONG
 
 mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dGNvcHBvbGEiLCJhIjoiY2ptb3ZsdmFuMTh1YTNrbWowa3gzZm82ZiJ9.S7EhnqCwmFeZmy-obXH41g';
 
 map = new mapboxgl.Map({
     container: 'map', // container id
-    style: 'mapbox://styles/mapbox/streets-v9', // stylesheet location
+    style: 'mapbox://styles/mapbox/streets-v9',
+    //    style: 'mapbox://styles/mattcoppola/cjn3eukxx08912ro6xi9ci950',
+    //    style: 'mapbox://styles/mattcoppola/cjn3eql0a008w2rpjazs9vkim',
     center: [currentLong, currentLat], // starting position [lng, lat]
     zoom: 10 // starting zoom
 });
