@@ -37,24 +37,12 @@ $('.currentLocation').on('click', function () {
 $('.reset').on('click', function () {
     console.log('reset clicked!');
     $('.landing').show();
-    $('#map').css('opacity', '1');
+    $('#map').css('opacity', '.5');
     $('.listings').css('visibility', 'hidden');
     $('.bus-listings').html('');
     $('.bike-listings').html('');
     removeBikeLayers();
     removeBusLayers();
-    //    if (map.getLayer('busses')) {
-    //        map.removeLayer('busses');
-    //    };
-    //    if (map.getSource('busses')) {
-    //        map.removeSource('busses');
-    //    };
-    //    if (map.getLayer('bikes')) {
-    //        map.removeLayer('bikes');
-    //    };
-    //    if (map.getSource('bikes')) {
-    //        map.removeSource('bikes');
-    //};
 });
 
 // ************** BIKE FUNCTIONS ************** //
@@ -139,9 +127,9 @@ function renderBikeListings(listing, index) {
     return `
         <li>
         <div class=bike-listing data-id=${index}>
-<img class="bike-icon" src="http://simpleicon.com/wp-content/uploads/bicycle.png" alt="Bicycle Image"/>
+<img class="bike-icon" src="images/bicycle.png" alt="Bicycle Image"/>
         <h3 class="bike-list-title">${listing.properties.name}</h3>
-        <div class="bike-list-details"><p>Operator: ${listing.properties.name}</p>
+        <div class="bike-list-details">
         <p>Operator: ${listing.properties.system_id}</p>
         <p>Bikes Available: ${listing.properties.num_bikes_available}</p>
         <p>Docks Available: ${listing.properties.num_docks_available}</p>
@@ -262,10 +250,10 @@ function renderBusListings(listing, index) {
         return `
             <li>
             <div class=bus-listing data-id=${index}>
-            <img class="bike-icon" src="https://image.flaticon.com/icons/svg/61/61985.svg" alt="Bus Image"/>
+            <img class="bike-icon" src="images/bus.svg" alt="Bus Image"/>
             <h3 class="bus-list-title">${listing.properties.name}</h3>
             <div class="bus-list-details"><p>Operator: ${listing.properties.operators_serving_stop[0].operator_name}</p>
-            <p>Route: ${listing.properties.operators_serving_stop[0].route_name}</p>
+            <p>Route: ${listing.properties.routes_serving_stop[0].route_name}</p>
             <p>${listing.properties.tags.stop_desc}</p>
             </div>
             </div>

@@ -35,6 +35,11 @@ As a user I want to be able to select my mode of transportation and search for m
 
 ![Directions Form](sketches/directions-form.jpg)
 
+## Development Road Map
+Features for future updates include:
+* Clicking on a Map Marker will expand the selection on the Findings section
+* Ability to obtain directions by selecting the finding 'Get Directions' link
+* Add filter to only return one mode of transportation
 
 ## Technical
 #### Front End

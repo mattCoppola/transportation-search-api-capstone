@@ -129,6 +129,10 @@ input#location {
     border-bottom: 1px solid black;
 }
 
+.listings li:hover {
+    background-color: rgb(200, 200, 200);
+}
+
 .bus-list-details,
 .bike-list-details {
     display: none;
