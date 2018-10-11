@@ -61,6 +61,7 @@ function displayBikeAPI(data) {
         //        };
     } else {
         $('.landing').hide();
+        $('.reset').show();
         $('#map').css('opacity', '1');
         displayBikeListings(data);
         // Add the data to your map as a layer
@@ -180,6 +181,7 @@ function displayBusAPI(data) {
         //        };
     } else {
         $('.landing').hide();
+        $('.reset').show();
         $('#map').css('opacity', '1');
         displayBusListings(data);
         // Add the data to your map as a layer
