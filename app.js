@@ -37,6 +37,7 @@ $('.currentLocation').on('click', function () {
 $('.reset').on('click', function () {
     console.log('reset clicked!');
     $('.landing').show();
+    $('.reset').hide();
     $('#map').css('opacity', '.5');
     $('.listings').css('visibility', 'hidden');
     $('.bus-listings').html('');
