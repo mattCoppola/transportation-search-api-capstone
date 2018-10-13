@@ -3,24 +3,28 @@ const busURL = 'https://transit.land/api/v1/stops.geojson';
 const bikeURL = 'https://api.coord.co/v1/sv/location';
 let currentLat = '41.8781'; //center on Chicago on App Load
 let currentLong = '-87.6298';
-let busLayer = 'busses';
-let bikeLayer = 'bikes';
+let busLayer = 'busses'; // set global bus layer
+let bikeLayer = 'bikes'; // set global bike layer
+let COORD = ''; //capturing geocoding first result
 
-// Error Handler - Message Display
-function displayError(message) {
-    $("#messageBox span").append(message);
-    $("#messageBox").fadeIn();
-    $("#messageBox").fadeOut(8000)
-    $("#messageBox").queue(function () {
-        $(this).empty().dequeue();
-    });
+// Error Handlers - Message Displays for Bus and Bike
+function displayBusError(message) {
+    console.log('bus error displayed');
+    $("#messageBox-bus").fadeIn();
+    $("#messageBox-bus").fadeOut(3000);
+    $("#messageBox-bus .bus").html(message);
+};
+
+function displayBikeError(message) {
+    console.log('bike error displayed');
+    $("#messageBox-bike").fadeIn();
+    $("#messageBox-bike").fadeOut(3000);
+    $("#messageBox-bike .bike").html(message);
 };
 
 // Listen for 'Show Current Location' Button Click
 $('.currentLocation').on('click', function () {
     event.preventDefault();
-    //        $('.landing').hide();
-    //        $('#map').css('opacity', '1');
     removeBikeLayers();
     removeBusLayers();
     getBusData(currentLat, currentLong, displayBusAPI);
@@ -35,7 +39,6 @@ $('.currentLocation').on('click', function () {
 
 // reset Map and return to Landing Page
 $('.reset').on('click', function () {
-    console.log('reset clicked!');
     $('.landing').show();
     $('.reset').hide();
     $('#map').css('opacity', '.5');
@@ -47,25 +50,17 @@ $('.reset').on('click', function () {
 });
 
 // ************** BIKE FUNCTIONS ************** //
-// Add Bike icons to map and setBusMarkers
+// Add Bike icons to map and set Bike Markers
 function displayBikeAPI(data) {
-    console.log(data);
+    console.log('bike:', data);
     if (data.features === null) {
-        console.log("no Bike results!!!");
-        displayError('<p>No Bike Data Available.  Search another location</p>');
+        displayBikeError('No Bike Data Available for this location.');
         removeBikeLayers();
-        //        if (map.getLayer('bikes')) {
-        //            map.removeLayer('bikes');
-        //        };
-        //        if (map.getSource('bikes')) {
-        //            map.removeSource('bikes');
-        //        };
     } else {
         $('.landing').hide();
         $('.reset').show();
         $('#map').css('opacity', '1');
         displayBikeListings(data);
-        // Add the data to your map as a layer
         removeBikeLayers();
         map.addLayer({
             id: 'bikes',
@@ -167,19 +162,12 @@ function flyToBike(data) {
 }
 
 // ************** BUS FUNCTIONS ************** //
-// Add Bus icons to map and setBusMarkers
+// Add Bus icons to map and set Bus Markers
 function displayBusAPI(data) {
-    console.log(data);
+    console.log('Bus: ', data);
     if (!data.features.length) {
-        console.log("no Bus results!!!");
-        displayError('No Bus Data Available.  Search another location');
+        displayBusError('No Bus Data Available for this location.');
         removeBusLayers();
-        //        if (map.getLayer('busses')) {
-        //            map.removeLayer('busses');
-        //        };
-        //        if (map.getSource('busses')) {
-        //            map.removeSource('busses');
-        //        };
     } else {
         $('.landing').hide();
         $('.reset').show();
@@ -232,6 +220,7 @@ function getBusData(lat, lon, callback) {
         r: '500',
         total: 'true'
     }
+    console.log(query);
     $.getJSON(busURL, query, function () {
             console.log('Bus API starting...');
         })
@@ -247,7 +236,6 @@ function getBusData(lat, lon, callback) {
 // Render HTML for Bus listings container
 function renderBusListings(listing, index) {
     if (listing.properties.operators_serving_stop[0] === undefined) {
-        console.log('operators serving stop is blank...skipping...')
         console.error(TypeError);
     } else {
         return `
@@ -302,7 +290,6 @@ function createBusPopUp(clickedListing) {
         .setHTML('<h3>' + clickedListing.properties.name + '</h3><p>' + clickedListing.properties.routes_serving_stop[0].operator_name + '</p><p>Route # : ' + clickedListing.properties.routes_serving_stop[0].route_name + '</p><p>Wheelchair: ' + clickedListing.properties.wheelchair_boarding + '</p>')
         .addTo(map);
 }
-
 
 // Create Bike Popup while flying to store
 function createBikePopUp(clickedListing) {
@@ -362,18 +349,22 @@ document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
 // grab coordinates of entered address/landmark
 geocoder.on('result', function (ev) {
-    removeBikeLayers();
-    removeBusLayers();
-    let first = $('.mapboxgl-ctrl-geocoder input:first').val();
-    console.log(first);
-    map.getSource('single-point');
     let coord = (ev.result.geometry);
-    console.log(coord);
-    let long = coord.coordinates[0];
-    let lat = coord.coordinates[1];
-    $('.mapboxgl-ctrl-geocoder input').val('');
-    getBusData(lat, long, displayBusAPI);
-    getBikeData(lat, long, displayBikeAPI);
+    if (COORD === coord) {
+        console.log(COORD, coord);
+    } else {
+        removeBikeLayers();
+        removeBusLayers();
+        //    map.getSource('single-point');
+        //    let coord = (ev.result.geometry);
+        console.log(coord);
+        let long = coord.coordinates[0];
+        let lat = coord.coordinates[1];
+        COORD = coord;
+        $('.mapboxgl-ctrl-geocoder input').val('');
+        getBusData(lat, long, displayBusAPI);
+        getBikeData(lat, long, displayBikeAPI);
+    }
 });
 
 
@@ -401,7 +392,6 @@ function error(err) {
 }
 
 function removeBikeLayers() {
-    console.log('removing bike layer: ' + bikeLayer)
     if (map.getLayer(bikeLayer)) {
         map.removeLayer(bikeLayer);
     };
@@ -411,7 +401,6 @@ function removeBikeLayers() {
 }
 
 function removeBusLayers() {
-    console.log('removing bus layer: ' + busLayer)
     if (map.getLayer(busLayer)) {
         map.removeLayer(busLayer);
     };

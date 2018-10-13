@@ -44,15 +44,16 @@ input {
 
 /*Message Box Styling*/
 .messages {
-    position: fixed;
+    position: relative;
+    width: 250px;
     z-index: 1000;
     top: 5%;
     left: 50%;
     transform: translate(-50%, 0);
     background-color: yellow;
     text-align: center;
-    font-size: .8em;
-    padding: 1.5em;
+    font-size: .6em;
+    padding: 1.1em;
     border-radius: 5px;
 }
 
