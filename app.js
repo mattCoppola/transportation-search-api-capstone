@@ -56,7 +56,7 @@ $('.reset').on('click', function () {
 // ************** BIKE FUNCTIONS ************** //
 // Add Bike icons to map and set Bike Markers
 function displayBikeAPI(data) {
-    console.log('bike:', data);
+    console.log('Bike Data:', data);
     if (data.features === null) {
         displayBikeError('No Bike Data Available for this location.');
         removeBikeLayers();
@@ -94,7 +94,6 @@ function setBikeHTMLOutput(marker) {
     } else {
         htmlOutput += '<p>Docks Available: ' + marker.properties.num_docks_available + '</p>';
     }
-
     return htmlOutput;
 }
 
@@ -114,8 +113,6 @@ function setBikeMarkers(data) {
                     offset: 25
                 }) // add popups
                 .setHTML(setBikeHTMLOutput(marker)))
-
-            //                .setHTML('<h3>' + marker.properties.system_id + '</h3><p>' + marker.properties.name + '</p><p>Bikes Available: ' + marker.properties.num_bikes_available + '</p><p>Docks Available: ' + marker.properties.num_docks_available + '</p>'))
             .addTo(map);
     });
 
@@ -160,28 +157,11 @@ function renderBikeListings(listing, index) {
     htmlOutput += `</div>`;
     htmlOutput += `</div>`;
     htmlOutput += `<div class="get-directions">`;
-    htmlOutput += `<a href="#">Get Directions</a>`;
+    htmlOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
     htmlOutput += `</div>`;
     htmlOutput += `</li>`;
 
     return htmlOutput;
-    //
-    //    return `
-    //        <li>
-    //        <div class=bike-listing data-id=${index}>
-    //<img class="bike-icon" src="images/bicycle.png" alt="Bicycle Image"/>
-    //        <h3 class="bike-list-title">${listing.properties.name}</h3>
-    //        <div class="bike-list-details">
-    //        <p>Operator: ${listing.properties.system_id}</p>
-    //        <p>Bikes Available: ${listing.properties.num_bikes_available}</p>
-    //        <p>Docks Available: ${listing.properties.num_docks_available}</p>
-    //        </div>
-    //        </div>
-    //        <div class="get-directions">
-    //        <a href="">Get Directions</a>
-    //        </div>
-    //        </li>
-    //        `;
 }
 
 // Display Bike Listings to HTML
@@ -209,7 +189,7 @@ function flyToBike(data) {
 // ************** BUS FUNCTIONS ************** //
 // Add Bus icons to map and set Bus Markers
 function displayBusAPI(data) {
-    console.log('Bus: ', data);
+    console.log('Bus Data: ', data);
     if (!data.features.length) {
         displayBusError('No Bus Data Available for this location.');
         removeBusLayers();
@@ -266,8 +246,6 @@ function setBusMarkers(data) {
                     offset: 25
                 }) // add popups
                 .setHTML(setBusHTMLOutput(marker)))
-
-            //                      .setHTML('<h3>' + marker.properties.name + '</h3><p>' + marker.properties.operators_serving_stop[0].operator_name + '</p><p>Route # : ' + marker.properties.operators_serving_stop[0].route_name + '</p><p>Wheelchair: ' + marker.properties.wheelchair_boarding + '</p>'))
             .addTo(map);
     });
 
@@ -281,7 +259,6 @@ function getBusData(lat, lon, callback) {
         r: '500',
         total: 'true'
     }
-    console.log(query);
     $.getJSON(busURL, query, function () {
             console.log('Bus API starting...');
         })
@@ -320,33 +297,11 @@ function renderBusListings(listing, index) {
     busHTMLOutput += `</div>`;
     busHTMLOutput += `</div>`;
     busHTMLOutput += `<div class="get-directions">`;
-    busHTMLOutput += `<div class="coords"><p>${listing.geometry.coordinates}<p></div>`
     busHTMLOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
     busHTMLOutput += `</div>`;
     busHTMLOutput += `</li>`;
 
     return busHTMLOutput;
-
-    //
-    //if (listing.properties.operators_serving_stop[0] === undefined) {
-    //    console.error(TypeError);
-    //} else {
-    //    return `
-    //                    <li>
-    //                    <div class=bus-listing data-id=${index}>
-    //                    <img class="bike-icon" src="images/bus.svg" alt="Bus Image"/>
-    //                    <h3 class="bus-list-title">${listing.properties.name}</h3>
-    //                    <div class="bus-list-details"><p>Operator: ${listing.properties.operators_serving_stop[0].operator_name}</p>
-    //                    <p>Route: ${listing.properties.routes_serving_stop[0].route_name}</p>
-    //                    <p>${listing.properties.tags.stop_desc}</p>
-    //                    </div>
-    //                    </div>
-    //                    <div class="get-directions">
-    //                    <a href="">Get Directions</a>
-    //                    </div>
-    //                    </li>
-    //                `;
-    //}
 }
 
 // Display Bus Listings to HTML
@@ -446,13 +401,11 @@ document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 geocoder.on('result', function (ev) {
     let coord = (ev.result.geometry);
     if (COORD === coord) {
-        console.log(COORD, coord);
+        //        console.log(COORD, coord);
     } else {
         removeBikeLayers();
         removeBusLayers();
-        //    map.getSource('single-point');
-        //    let coord = (ev.result.geometry);
-        console.log(coord);
+        //        console.log(coord);
         let long = coord.coordinates[0];
         let lat = coord.coordinates[1];
         COORD = coord;
@@ -473,11 +426,10 @@ let options = {
 
 function success(pos) {
     let crd = pos.coords;
-
-    console.log('Your current position is:');
-    console.log(`Latitude : ${crd.latitude}`);
-    console.log(`Longitude: ${crd.longitude}`);
-    console.log(`More or less ${crd.accuracy} meters.`);
+    //    console.log('Your current position is:');
+    //    console.log(`Latitude : ${crd.latitude}`);
+    //    console.log(`Longitude: ${crd.longitude}`);
+    //    console.log(`More or less ${crd.accuracy} meters.`);
     currentLat = crd.latitude;
     currentLong = crd.longitude;
 }
@@ -499,6 +451,18 @@ function removeBikeLayers() {
     if (map.getSource('route')) {
         map.removeSource('route');
     };
+    if (map.getLayer('start')) {
+        map.removeLayer('start');
+    };
+    if (map.getSource('start')) {
+        map.removeSource('start');
+    };
+    if (map.getLayer('end')) {
+        map.removeLayer('end');
+    };
+    if (map.getSource('end')) {
+        map.removeSource('end');
+    };
 }
 
 function removeBusLayers() {
@@ -508,23 +472,30 @@ function removeBusLayers() {
     if (map.getSource(busLayer)) {
         map.removeSource(busLayer);
     };
-    if (map.getLayer('route')) {
-        map.removeLayer('route');
-    };
     if (map.getSource('route')) {
         map.removeSource('route');
+    };
+    if (map.getLayer('start')) {
+        map.removeLayer('start');
+    };
+    if (map.getSource('start')) {
+        map.removeSource('start');
+    };
+    if (map.getLayer('end')) {
+        map.removeLayer('end');
+    };
+    if (map.getSource('end')) {
+        map.removeSource('end');
     };
 }
 
 navigator.geolocation.getCurrentPosition(success, error, options);
 
-
-
-//***** Directions Functions *****
+//***** Directions Functions - WORK IN PROGRESS - NOT FULLY FUNCTIONAL *****
 $('.listings').on('click', '.get-directions a', function () {
     let Coords = $(this, 'data-id').data()
     startCoord = Object.values(Coords).toString().split(',');
-    console.log(startCoord);
+    //    console.log(startCoord);
     $('#directions').css('visibility', 'visible');
 });
 
@@ -537,12 +508,15 @@ document.getElementById('directions').appendChild(directions.onAdd(map));
 
 directions.on('result', function (ev) {
     let directionsCoord = (ev.result.geometry.coordinates);
-    console.log(directionsCoord);
+    //    console.log(directionsCoord);
     if (DIRECTIONSCOORD === directionsCoord) {
         console.log('first directions catch', DIRECTIONSCOORD, directionsCoord);
     } else {
         DIRECTIONSCOORD = directionsCoord;
         getRoute(startCoord, directionsCoord);
+        $('.mapboxgl-ctrl-geocoder input').val('');
+        $('.listings').css('visibility', 'hidden');
+        $('.directions').hide();
     }
 });
 
@@ -569,11 +543,33 @@ function getRoute(startCoord, directionsCoord) {
                 'line-width': 2
             }
         });
-        // this is where the code from the next step will go
+        map.addLayer({
+            id: 'start',
+            type: 'circle',
+            source: {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: start
+                    }
+                }
+            }
+        });
+        map.addLayer({
+            id: 'end',
+            type: 'circle',
+            source: {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: end
+                    }
+                }
+            }
+        });
     });
 }
-
-//$('.listings').on('click', '.coords', function () {
-//    let startCoord = $(this, '.coords').text()
-//    console.log(startCoord);
-//});
