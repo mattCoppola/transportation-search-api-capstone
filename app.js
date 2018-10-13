@@ -79,8 +79,24 @@ function displayBikeAPI(data) {
     }
 }
 
+// set Bike Marker HTML - using if statement to catch missing info
+function setBikeHTMLOutput(marker) {
+    let htmlOutput = '';
+    htmlOutput += '<h3>' + marker.properties.system_id + '</h3>';
+    htmlOutput += '<p>' + marker.properties.name + '</p>';
+    htmlOutput += '<p>Bikes Available: ' + marker.properties.num_bikes_available + '</p>';
+    if (marker.properties.num_docks_available === null || marker.properties.num_docks_available === undefined) {
+        htmlOutput += '<p>No Dock Info</p>';
+    } else {
+        htmlOutput += '<p>Docks Available: ' + marker.properties.num_docks_available + '</p>';
+    }
+
+    return htmlOutput;
+}
+
 // set Bike markers at time of rendering
 function setBikeMarkers(data) {
+
     data.features.forEach(function (marker) {
 
         // create a HTML element for each feature
@@ -93,7 +109,9 @@ function setBikeMarkers(data) {
             .setPopup(new mapboxgl.Popup({
                     offset: 25
                 }) // add popups
-                .setHTML('<h3>' + marker.properties.system_id + '</h3><p>' + marker.properties.name + '</p><p>Bikes Available: ' + marker.properties.num_bikes_available + '</p><p>Docks Available: ' + marker.properties.num_docks_available + '</p>'))
+                .setHTML(setBikeHTMLOutput(marker)))
+
+            //                .setHTML('<h3>' + marker.properties.system_id + '</h3><p>' + marker.properties.name + '</p><p>Bikes Available: ' + marker.properties.num_bikes_available + '</p><p>Docks Available: ' + marker.properties.num_docks_available + '</p>'))
             .addTo(map);
     });
 
@@ -121,22 +139,45 @@ function getBikeData(lat, lon, callback) {
 
 // Render HTML for Bike listings container
 function renderBikeListings(listing, index) {
-    return `
-        <li>
-        <div class=bike-listing data-id=${index}>
-<img class="bike-icon" src="images/bicycle.png" alt="Bicycle Image"/>
-        <h3 class="bike-list-title">${listing.properties.name}</h3>
-        <div class="bike-list-details">
-        <p>Operator: ${listing.properties.system_id}</p>
-        <p>Bikes Available: ${listing.properties.num_bikes_available}</p>
-        <p>Docks Available: ${listing.properties.num_docks_available}</p>
-        </div>
-        </div>
-        <div class="get-directions">
-        <a href="">Get Directions</a>
-        </div>
-        </li>
-        `;
+    let htmlOutput = '';
+
+    htmlOutput += `<li>`;
+    htmlOutput += `<div class=bike-listing data-id=${index}>`;
+    htmlOutput += `<img class="bike-icon" src="images/bicycle.png" alt="Bicycle Image"/>`;
+    htmlOutput += `<h3 class="bike-list-title">${listing.properties.name}</h3>`;
+    htmlOutput += `<div class="bike-list-details">`;
+    htmlOutput += `<p>Operator: ${listing.properties.system_id}</p>`;
+    htmlOutput += `<p>Bikes Available: ${listing.properties.num_bikes_available}</p>`;
+    if (listing.properties.num_docks_available === undefined) {
+        htmlOutput += `Type: ${listing.properties.location_type}`;
+    } else {
+        htmlOutput += `<p>Docks Available: ${listing.properties.num_docks_available}</p>`;
+    }
+    htmlOutput += `</div>`;
+    htmlOutput += `</div>`;
+    htmlOutput += `<div class="get-directions">`;
+    htmlOutput += `<a href="">Get Directions</a>`;
+    htmlOutput += `</div>`;
+    htmlOutput += `</li>`;
+
+    return htmlOutput;
+    //
+    //    return `
+    //        <li>
+    //        <div class=bike-listing data-id=${index}>
+    //<img class="bike-icon" src="images/bicycle.png" alt="Bicycle Image"/>
+    //        <h3 class="bike-list-title">${listing.properties.name}</h3>
+    //        <div class="bike-list-details">
+    //        <p>Operator: ${listing.properties.system_id}</p>
+    //        <p>Bikes Available: ${listing.properties.num_bikes_available}</p>
+    //        <p>Docks Available: ${listing.properties.num_docks_available}</p>
+    //        </div>
+    //        </div>
+    //        <div class="get-directions">
+    //        <a href="">Get Directions</a>
+    //        </div>
+    //        </li>
+    //        `;
 }
 
 // Display Bike Listings to HTML
@@ -192,6 +233,20 @@ function displayBusAPI(data) {
     }
 }
 
+// set Bus Marker HTML - using if statement to catch missing info
+function setBusHTMLOutput(marker) {
+    let htmlOutput = '';
+    htmlOutput += '<h3>' + marker.properties.name + '</h3>';
+    htmlOutput += '<p>' + marker.properties.operators_serving_stop[0].operator_name + '</p>';
+    htmlOutput += '<p>Route #: ' + marker.properties.routes_serving_stop[0].route_name + '</p>';
+    if (marker.properties.wheelchair_boarding === null || marker.properties.wheelchair_boarding === undefined) {
+        htmlOutput += '<p>No Wheelchair Info</p>';
+    } else {
+        htmlOutput += '<p>Wheelchair: ' + marker.properties.wheelchair_boarding + '</p>';
+    }
+    return htmlOutput;
+}
+
 // set Bus markers at time of rendering
 function setBusMarkers(data) {
     data.features.forEach(function (marker) {
@@ -206,7 +261,9 @@ function setBusMarkers(data) {
             .setPopup(new mapboxgl.Popup({
                     offset: 25
                 }) // add popups
-                .setHTML('<h3>' + marker.properties.name + '</h3><p>' + marker.properties.operators_serving_stop[0].operator_name + '</p><p>Route # : ' + marker.properties.operators_serving_stop[0].route_name + '</p><p>Wheelchair: ' + marker.properties.wheelchair_boarding + '</p>'))
+                .setHTML(setBusHTMLOutput(marker)))
+
+            //                      .setHTML('<h3>' + marker.properties.name + '</h3><p>' + marker.properties.operators_serving_stop[0].operator_name + '</p><p>Route # : ' + marker.properties.operators_serving_stop[0].route_name + '</p><p>Wheelchair: ' + marker.properties.wheelchair_boarding + '</p>'))
             .addTo(map);
     });
 
@@ -235,25 +292,52 @@ function getBusData(lat, lon, callback) {
 
 // Render HTML for Bus listings container
 function renderBusListings(listing, index) {
+    let busHTMLOutput = '';
+
+    busHTMLOutput += `<li>`;
+    busHTMLOutput += `<div class=bus-listing data-id=${index}>`;
+    busHTMLOutput += `<img class="bike-icon" src="images/bus.svg" alt="Bus Image"/>`;
+    busHTMLOutput += `<h3 class="bus-list-title">${listing.properties.name}</h3>`;
     if (listing.properties.operators_serving_stop[0] === undefined) {
-        console.error(TypeError);
+        busHTMLOutput += `<div class="bus-list-details"><p>No Operator Info</p>`;
     } else {
-        return `
-            <li>
-            <div class=bus-listing data-id=${index}>
-            <img class="bike-icon" src="images/bus.svg" alt="Bus Image"/>
-            <h3 class="bus-list-title">${listing.properties.name}</h3>
-            <div class="bus-list-details"><p>Operator: ${listing.properties.operators_serving_stop[0].operator_name}</p>
-            <p>Route: ${listing.properties.routes_serving_stop[0].route_name}</p>
-            <p>${listing.properties.tags.stop_desc}</p>
-            </div>
-            </div>
-            <div class="get-directions">
-            <a href="">Get Directions</a>
-            </div>
-            </li>
-        `;
+        busHTMLOutput += `<div class="bus-list-details"><p>Operator: ${listing.properties.operators_serving_stop[0].operator_name}</p>`;
     }
+    if (listing.properties.routes_serving_stop[0] === undefined) {
+        busHTMLOutput += `<p>No Route Defined</p>`
+    } else {
+        busHTMLOutput += `<p>Route: ${listing.properties.routes_serving_stop[0].route_name}</p>`;
+    }
+    busHTMLOutput += `<p>${listing.properties.tags.stop_desc}</p>`;
+    busHTMLOutput += `</div>`;
+    busHTMLOutput += `</div>`;
+    busHTMLOutput += `<div class="get-directions">`;
+    busHTMLOutput += `<a href="">Get Directions</a>`;
+    busHTMLOutput += `</div>`;
+    busHTMLOutput += `</li>`;
+
+    return busHTMLOutput;
+
+    //
+    //if (listing.properties.operators_serving_stop[0] === undefined) {
+    //    console.error(TypeError);
+    //} else {
+    //    return `
+    //                    <li>
+    //                    <div class=bus-listing data-id=${index}>
+    //                    <img class="bike-icon" src="images/bus.svg" alt="Bus Image"/>
+    //                    <h3 class="bus-list-title">${listing.properties.name}</h3>
+    //                    <div class="bus-list-details"><p>Operator: ${listing.properties.operators_serving_stop[0].operator_name}</p>
+    //                    <p>Route: ${listing.properties.routes_serving_stop[0].route_name}</p>
+    //                    <p>${listing.properties.tags.stop_desc}</p>
+    //                    </div>
+    //                    </div>
+    //                    <div class="get-directions">
+    //                    <a href="">Get Directions</a>
+    //                    </div>
+    //                    </li>
+    //                `;
+    //}
 }
 
 // Display Bus Listings to HTML
