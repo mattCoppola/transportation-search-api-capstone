@@ -39,6 +39,7 @@ $('.currentLocation').on('click', function () {
 
 // reset Map and return to Landing Page
 $('.reset').on('click', function () {
+    $('.mapboxgl-popup').remove();
     $('.landing').show();
     $('.reset').hide();
     $('#map').css('opacity', '.5');
@@ -304,11 +305,15 @@ function renderBusListings(listing, index) {
         busHTMLOutput += `<div class="bus-list-details"><p>Operator: ${listing.properties.operators_serving_stop[0].operator_name}</p>`;
     }
     if (listing.properties.routes_serving_stop[0] === undefined) {
-        busHTMLOutput += `<p>No Route Defined</p>`
+        busHTMLOutput += `<p>No Route Defined</p>`;
     } else {
         busHTMLOutput += `<p>Route: ${listing.properties.routes_serving_stop[0].route_name}</p>`;
     }
-    busHTMLOutput += `<p>${listing.properties.tags.stop_desc}</p>`;
+    if (listing.properties.tags.stop_desc === undefined) {
+        busHTMLOutput += `No Stop Description`;
+    } else {
+        busHTMLOutput += `<p>${listing.properties.tags.stop_desc}</p>`;
+    }
     busHTMLOutput += `</div>`;
     busHTMLOutput += `</div>`;
     busHTMLOutput += `<div class="get-directions">`;
@@ -392,6 +397,9 @@ function createBikePopUp(clickedListing) {
 function showBusListDetails() {
     $('.bus-list-title').click(function () {
         $(this).next('.bus-list-details').slideToggle();
+        var popUps = document.getElementsByClassName('mapboxgl-popup');
+        // Check if there is already a popup on the map and if so, remove it
+        if (popUps[0]) popUps[0].remove();
     });
 }
 
