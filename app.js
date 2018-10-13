@@ -5,7 +5,9 @@ let currentLat = '41.8781'; //center on Chicago on App Load
 let currentLong = '-87.6298';
 let busLayer = 'busses'; // set global bus layer
 let bikeLayer = 'bikes'; // set global bike layer
-let COORD = ''; //capturing geocoding first result
+let COORD = ''; //capturing geocoding first result (landing search)
+let DIRECTIONSCOORD = ''; //capturing geocoding first result (directions search)
+let startCoord = ''; //initialize for directions
 
 // Error Handlers - Message Displays for Bus and Bike
 function displayBusError(message) {
@@ -41,6 +43,7 @@ $('.currentLocation').on('click', function () {
 $('.reset').on('click', function () {
     $('.mapboxgl-popup').remove();
     $('.landing').show();
+    $('#directions').css('visibility', 'hidden');
     $('.reset').hide();
     $('#map').css('opacity', '.5');
     $('.listings').css('visibility', 'hidden');
@@ -157,7 +160,7 @@ function renderBikeListings(listing, index) {
     htmlOutput += `</div>`;
     htmlOutput += `</div>`;
     htmlOutput += `<div class="get-directions">`;
-    htmlOutput += `<a href="">Get Directions</a>`;
+    htmlOutput += `<a href="#">Get Directions</a>`;
     htmlOutput += `</div>`;
     htmlOutput += `</li>`;
 
@@ -317,7 +320,8 @@ function renderBusListings(listing, index) {
     busHTMLOutput += `</div>`;
     busHTMLOutput += `</div>`;
     busHTMLOutput += `<div class="get-directions">`;
-    busHTMLOutput += `<a href="">Get Directions</a>`;
+    busHTMLOutput += `<div class="coords"><p>${listing.geometry.coordinates}<p></div>`
+    busHTMLOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
     busHTMLOutput += `</div>`;
     busHTMLOutput += `</li>`;
 
@@ -397,9 +401,6 @@ function createBikePopUp(clickedListing) {
 function showBusListDetails() {
     $('.bus-list-title').click(function () {
         $(this).next('.bus-list-details').slideToggle();
-        var popUps = document.getElementsByClassName('mapboxgl-popup');
-        // Check if there is already a popup on the map and if so, remove it
-        if (popUps[0]) popUps[0].remove();
     });
 }
 
@@ -408,6 +409,8 @@ function showBikeListDetails() {
         $(this).next('.bike-list-details').slideToggle();
     });
 }
+
+
 
 // ************** MAPBOX FUNCTIONS ************** //
 // MAPBOX - INITIALIZE AND GEOLOCATE CURRENT LAT/LONG
@@ -490,6 +493,12 @@ function removeBikeLayers() {
     if (map.getSource(bikeLayer)) {
         map.removeSource(bikeLayer);
     };
+    if (map.getLayer('route')) {
+        map.removeLayer('route');
+    };
+    if (map.getSource('route')) {
+        map.removeSource('route');
+    };
 }
 
 function removeBusLayers() {
@@ -499,6 +508,72 @@ function removeBusLayers() {
     if (map.getSource(busLayer)) {
         map.removeSource(busLayer);
     };
+    if (map.getLayer('route')) {
+        map.removeLayer('route');
+    };
+    if (map.getSource('route')) {
+        map.removeSource('route');
+    };
 }
 
 navigator.geolocation.getCurrentPosition(success, error, options);
+
+
+
+//***** Directions Functions *****
+$('.listings').on('click', '.get-directions a', function () {
+    let Coords = $(this, 'data-id').data()
+    startCoord = Object.values(Coords).toString().split(',');
+    console.log(startCoord);
+    $('#directions').css('visibility', 'visible');
+});
+
+var directions = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken
+});
+
+document.getElementById('directions').appendChild(directions.onAdd(map));
+
+
+directions.on('result', function (ev) {
+    let directionsCoord = (ev.result.geometry.coordinates);
+    console.log(directionsCoord);
+    if (DIRECTIONSCOORD === directionsCoord) {
+        console.log('first directions catch', DIRECTIONSCOORD, directionsCoord);
+    } else {
+        DIRECTIONSCOORD = directionsCoord;
+        getRoute(startCoord, directionsCoord);
+    }
+});
+
+function getRoute(startCoord, directionsCoord) {
+    let start = startCoord;
+    let end = directionsCoord;
+    let directionsRequest = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?geometries=geojson&access_token=' + mapboxgl.accessToken;
+    $.ajax({
+        method: 'GET',
+        url: directionsRequest,
+    }).done(function (data) {
+        let route = data.routes[0].geometry;
+        map.addLayer({
+            id: 'route',
+            type: 'line',
+            source: {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: route
+                }
+            },
+            paint: {
+                'line-width': 2
+            }
+        });
+        // this is where the code from the next step will go
+    });
+}
+
+//$('.listings').on('click', '.coords', function () {
+//    let startCoord = $(this, '.coords').text()
+//    console.log(startCoord);
+//});

@@ -72,7 +72,7 @@ input {
 }
 
 header {
-    margin-top: 10em;
+    /*    margin-top: 10em;*/
     text-shadow: 1px 1px 0px #fff, 2px 2px 0px rgba(0, 0, 0, 0.15);
 
 }
@@ -252,7 +252,7 @@ geocoder {
         position: relative;
         font-size: 1em;
         max-width: 320px;
-        top: 35%;
+        /*        top: 35%;*/
     }
 
     .landing {
@@ -263,7 +263,7 @@ geocoder {
         position: relative;
         margin: 0;
         font-size: .9em;
-        top: 35%;
+        /*        top: 35%;*/
     }
 
     .listings {
