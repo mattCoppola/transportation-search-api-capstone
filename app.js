@@ -11,14 +11,14 @@ let startCoord = ''; //initialize for directions
 
 // Error Handlers - Message Displays for Bus and Bike
 function displayBusError(message) {
-    console.log('bus error displayed');
+    //    console.log('bus error displayed');
     $("#messageBox-bus").fadeIn();
     $("#messageBox-bus").fadeOut(3000);
     $("#messageBox-bus .bus").html(message);
 };
 
 function displayBikeError(message) {
-    console.log('bike error displayed');
+    //    console.log('bike error displayed');
     $("#messageBox-bike").fadeIn();
     $("#messageBox-bike").fadeOut(3000);
     $("#messageBox-bike .bike").html(message);
@@ -67,7 +67,7 @@ function displayBikeAPI(data) {
         $('.reset').show();
         $('#map').css('opacity', '1');
         displayBikeListings(data);
-        removeBikeLayers();
+        removeBikeLayers(); //remove existing Bike Layers
         map.addLayer({
             id: 'bikes',
             type: 'symbol',
@@ -78,6 +78,7 @@ function displayBikeAPI(data) {
             },
             layout: {
                 'icon-image': 'bicycle-15', //https://github.com/mapbox/maki/tree/master/icons
+                'icon-size': 1.5,
                 'icon-allow-overlap': true,
             }
         });
@@ -101,13 +102,10 @@ function setBikeHTMLOutput(marker) {
 
 // set Bike markers at time of rendering
 function setBikeMarkers(data) {
-
     data.features.forEach(function (marker) {
-
         // create a HTML element for each feature
         var el = document.createElement('div');
         el.className = 'marker';
-
         // make a marker for each feature and add to the map
         new mapboxgl.Marker(el)
             .setLngLat(marker.geometry.coordinates)
@@ -117,10 +115,9 @@ function setBikeMarkers(data) {
                 .setHTML(setBikeHTMLOutput(marker)))
             .addTo(map);
     });
-
 }
 
-// API CALL TO Coord (For Bike Data)
+// API CALL To Coord (For Bike Data)
 function getBikeData(lat, lon, callback) {
     let query = {
         access_key: 'liETJic1H2dGU29EVfgqfA9SyWR6kjgJjRgzQtO_4AU',
@@ -147,11 +144,15 @@ function renderBikeListings(listing, index) {
     htmlOutput += `<li>`;
     htmlOutput += `<div class=bike-listing data-id=${index}>`;
     htmlOutput += `<img class="bike-icon" src="images/bicycle.png" alt="Bicycle Image"/>`;
-    htmlOutput += `<h3 class="bike-list-title">${listing.properties.name}</h3>`;
+    if (listing.properties.name === '') {
+        htmlOutput += 'This bike has no name';
+    } else {
+        htmlOutput += `<h3 class="bike-list-title">${listing.properties.name}</h3>`;
+    }
     htmlOutput += `<div class="bike-list-details">`;
     htmlOutput += `<p>Operator: ${listing.properties.system_id}</p>`;
     htmlOutput += `<p>Bikes Available: ${listing.properties.num_bikes_available}</p>`;
-    if (listing.properties.num_docks_available === undefined) {
+    if (listing.properties.num_docks_available === null || listing.properties.num_docks_available === undefined) {
         htmlOutput += `Type: ${listing.properties.location_type}`;
     } else {
         htmlOutput += `<p>Docks Available: ${listing.properties.num_docks_available}</p>`;
@@ -181,8 +182,8 @@ function flyToBike(data) {
         let clickedListing = data.features[this.dataset.id];
         map.flyTo({
             center: clickedListing.geometry.coordinates,
-            speed: 1.8,
-            zoom: 20
+            speed: 1.3,
+            zoom: 15
         });
         createBikePopUp(clickedListing);
     });
@@ -212,6 +213,7 @@ function displayBusAPI(data) {
             },
             layout: {
                 'icon-image': 'bus-15', //https://github.com/mapbox/maki/tree/master/icons
+                'icon-size': 1.5,
                 'icon-allow-overlap': true,
             }
         });
@@ -330,6 +332,16 @@ function flyToBus(data) {
 
 // Create Bus Popup while flying to store
 function createBusPopUp(clickedListing) {
+    let busHTMLOutput = '';
+    busHTMLOutput += '<h3>' + clickedListing.properties.name + '</h3>';
+    busHTMLOutput += '<p>' + clickedListing.properties.operators_serving_stop[0].operator_name + '</p>';
+    busHTMLOutput += '<p>Route #: ' + clickedListing.properties.routes_serving_stop[0].route_name + '</p>';
+    if (clickedListing.properties.wheelchair_boarding === null || clickedListing.properties.wheelchair_boarding === undefined) {
+        busHTMLOutput += '<p>No Wheelchair Info</p>';
+    } else {
+        busHTMLOutput += '<p>Wheelchair: ' + clickedListing.properties.wheelchair_boarding + '</p>';
+    }
+
     var popUps = document.getElementsByClassName('mapboxgl-popup');
     // Check if there is already a popup on the map and if so, remove it
     if (popUps[0]) popUps[0].remove();
@@ -337,12 +349,23 @@ function createBusPopUp(clickedListing) {
             closeOnClick: false
         })
         .setLngLat(clickedListing.geometry.coordinates)
-        .setHTML('<h3>' + clickedListing.properties.name + '</h3><p>' + clickedListing.properties.routes_serving_stop[0].operator_name + '</p><p>Route # : ' + clickedListing.properties.routes_serving_stop[0].route_name + '</p><p>Wheelchair: ' + clickedListing.properties.wheelchair_boarding + '</p>')
+        .setHTML(busHTMLOutput)
+        //    '<h3>' + clickedListing.properties.name + '</h3><p>' + clickedListing.properties.routes_serving_stop[0].operator_name + '</p><p>Route # : ' + clickedListing.properties.routes_serving_stop[0].route_name + '</p><p>Wheelchair: ' + clickedListing.properties.wheelchair_boarding + '</p>'
         .addTo(map);
 }
 
 // Create Bike Popup while flying to store
 function createBikePopUp(clickedListing) {
+    let htmlOutput = '';
+    htmlOutput += '<h3>' + clickedListing.properties.system_id + '</h3>';
+    htmlOutput += '<p>' + clickedListing.properties.name + '</p>';
+    htmlOutput += '<p>Bikes Available: ' + clickedListing.properties.num_bikes_available + '</p>';
+    if (clickedListing.properties.num_docks_available === null || clickedListing.properties.num_docks_available === undefined) {
+        htmlOutput += '<p>No Dock Info</p>';
+    } else {
+        htmlOutput += '<p>Docks Available: ' + clickedListing.properties.num_docks_available + '</p>';
+    }
+
     var popUps = document.getElementsByClassName('mapboxgl-popup');
     // Check if there is already a popup on the map and if so, remove it
     if (popUps[0]) popUps[0].remove();
@@ -350,7 +373,12 @@ function createBikePopUp(clickedListing) {
             closeOnClick: false
         })
         .setLngLat(clickedListing.geometry.coordinates)
-        .setHTML('<h3>' + clickedListing.properties.system_id + '</h3><p>' + clickedListing.properties.name + '</p><p>Bikes Available: ' + clickedListing.properties.num_bikes_available + '</p><p>Docks Available: ' + clickedListing.properties.num_docks_available + '</p>')
+        .setHTML(htmlOutput)
+        //    '<h3>' + clickedListing.properties.system_id + '</h3><p>' + clickedListing.properties.name + '</p><p>Bikes Available: ' + clickedListing.properties.num_bikes_available + '</p><p>Docks Available: ' + clickedListing.properties.num_docks_available + '</p>'
+
+
+
+
         .addTo(map);
 }
 
