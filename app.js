@@ -44,7 +44,9 @@ $('.reset').on('click', function () {
     $('.mapboxgl-popup').remove();
     $('.landing').show();
     $('#directions').css('visibility', 'hidden');
+    $('#instructions').css('visibility', 'hidden');
     $('.reset').hide();
+    $(".reset").css('top', '');
     $('#map').css('opacity', '.5');
     $('.listings').css('visibility', 'hidden');
     $('.bus-listings').html('');
@@ -523,7 +525,7 @@ directions.on('result', function (ev) {
 function getRoute(startCoord, directionsCoord) {
     let start = startCoord;
     let end = directionsCoord;
-    let directionsRequest = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?geometries=geojson&access_token=' + mapboxgl.accessToken;
+    let directionsRequest = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
     $.ajax({
         method: 'GET',
         url: directionsRequest,
@@ -571,5 +573,14 @@ function getRoute(startCoord, directionsCoord) {
                 }
             }
         });
+        let instructions = document.getElementById('instructions');
+        let steps = data.routes[0].legs[0].steps;
+        steps.forEach(function (step) {
+            instructions.insertAdjacentHTML('beforeend', '<p>' + step.maneuver.instruction + '</p>');
+        });
     });
+
+    $('#directions').css('visibility', 'hidden');
+    $('#instructions').css('visibility', 'visible');
+    $(".reset").css('top', '90%');
 }
