@@ -1,8 +1,14 @@
+/***************************************************/
+/* Standard Styling */
+/***************************************************/
+
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    font-family: 'Hind', sans-serif;
+    /*    font-family: 'Hind', sans-serif;*/
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
 }
 
 html,
@@ -11,10 +17,62 @@ main {
     height: 100%;
 }
 
+/***************************************************/
+/* Element Styling */
+/***************************************************/
+
+header,
+form,
+input {
+    text-align: center;
+}
+
+header {
+    /*    margin-top: 10em;*/
+    text-shadow: 1px 1px 0px #fff, 2px 2px 0px rgba(0, 0, 0, 0.15);
+
+}
+
+h1 {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    color: #2a2a2a;
+    font-size: 3em;
+}
+
+
+h2 {
+    font-weight: 300;
+}
+
 ul {
     padding: 0;
     list-style: none;
 }
+
+form {
+    max-width: 400px;
+    margin: auto;
+    padding: 25px 10px;
+    font-size: 1em;
+    font-weight: 300;
+    color: #ecf0f1;
+    background-color: rgba(44, 62, 80, 0.8);
+    border: 1px solid rgba(44, 62, 80, 0.8);
+    border-radius: 5px;
+}
+
+input {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 2px 10px;
+    height: 2rem;
+}
+
+/***************************************************/
+/* Classes and IDs Styling */
+/***************************************************/
 
 .landing {
     width: 400px;
@@ -26,12 +84,6 @@ ul {
     top: 50%;
     margin-left: -200px;
     margin-top: -200px;
-}
-
-header,
-form,
-input {
-    text-align: center;
 }
 
 #directions {
@@ -73,37 +125,18 @@ input {
     border-radius: 5px;
 }
 
-header {
-    /*    margin-top: 10em;*/
-    text-shadow: 1px 1px 0px #fff, 2px 2px 0px rgba(0, 0, 0, 0.15);
-
-}
-
-form {
-    max-width: 400px;
-    margin: auto;
-    padding: 25px 10px;
-    font-size: 1em;
-    background-color: rgba(245, 245, 245, 0.85);
-    border: 1px solid rgba(240, 248, 255, 1);
-    border-radius: 5px;
-}
-
-input {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 2px 10px;
-    height: 2rem;
-}
-
 .currentLocation {
     text-decoration: none;
+    background-color: #ecf0f1;
     margin: 2px 0;
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 5px;
     padding: .5em;
     width: 60%;
+}
+
+.currentLocation:hover {
+    background-color: #c3d4d4;
 }
 
 input#location {
@@ -112,7 +145,14 @@ input#location {
 }
 
 .reset {
+    background-color: rgb(44, 62, 80);
+    color: white;
+    border-radius: 5px;
     display: none;
+}
+
+.reset:hover {
+    background-color: #1895f6;
 }
 
 #map {
@@ -140,7 +180,8 @@ input#location {
     padding-right: 1em;
     z-index: 1000;
     overflow: auto;
-    background-color: rgb(245, 245, 245);
+    color: black;
+    background-color: #ecf0f1;
     visibility: hidden;
 }
 
@@ -150,7 +191,7 @@ input#location {
 }
 
 .listings li:hover {
-    background-color: rgb(200, 200, 200);
+    background-color: #c3d4d4;
 }
 
 .bus-list-details,
@@ -158,6 +199,7 @@ input#location {
     display: none;
 }
 
+/*Use for both bike & bus*/
 .bike-icon {
     display: block;
     float: left;
@@ -200,7 +242,9 @@ geocoder {
     visibility: hidden;
 }
 
+/***************************************************/
 /*MEDIA QUERIES*/
+/***************************************************/
 
 /*iPhone Portrait*/
 @media only screen and (min-width: 320px) {
@@ -211,6 +255,7 @@ geocoder {
 
     h3 {
         font-size: .9em;
+        font-weight: 300;
     }
 
     .reset {
@@ -283,7 +328,6 @@ geocoder {
         padding-right: 1em;
         z-index: 1000;
         overflow: auto;
-        background-color: rgb(245, 245, 245);
         visibility: hidden;
     }
 
