@@ -47,7 +47,7 @@ $('.reset').on('click', function () {
     $('#instructions').css('visibility', 'hidden');
     $('.reset').hide();
     $(".reset").css('top', '');
-    $('#map').css('opacity', '.5');
+    $('#map').css('opacity', '.4');
     $('.listings').css('visibility', 'hidden');
     $('.bus-listings').html('');
     $('.bike-listings').html('');
@@ -404,7 +404,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dGNvcHBvbGEiLCJhIjoiY2ptb3ZsdmFuMTh1YTNrb
 
 map = new mapboxgl.Map({
     container: 'map', // container id
-    style: 'mapbox://styles/mapbox/streets-v9',
+//    style: 'mapbox://styles/mapbox/streets-v9',
+    style: 'mapbox://styles/mattcoppola/cjncdq5cp0k7r2rqjy96nfxv3',
     //    style: 'mapbox://styles/mattcoppola/cjn3eukxx08912ro6xi9ci950',
     //    style: 'mapbox://styles/mattcoppola/cjn3eql0a008w2rpjazs9vkim',
     center: [currentLong, currentLat], // starting position [lng, lat]
@@ -521,11 +522,13 @@ function removeBusLayers() {
 
 navigator.geolocation.getCurrentPosition(success, error, options);
 
+/***************************************************************************/
 //***** Directions Functions - WORK IN PROGRESS - NOT FULLY FUNCTIONAL *****
+/***************************************************************************/
+
 $('.listings').on('click', '.get-directions a', function () {
     let Coords = $(this, 'data-id').data()
     startCoord = Object.values(Coords).toString().split(',');
-    //    console.log(startCoord);
     $('#directions').css('visibility', 'visible');
 });
 
@@ -538,7 +541,6 @@ document.getElementById('directions').appendChild(directions.onAdd(map));
 
 directions.on('result', function (ev) {
     let directionsCoord = (ev.result.geometry.coordinates);
-    //    console.log(directionsCoord);
     if (DIRECTIONSCOORD === directionsCoord) {
         console.log('first directions catch', DIRECTIONSCOORD, directionsCoord);
     } else {

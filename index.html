@@ -14,19 +14,19 @@
 </head>
 
 <body>
-    <div id="messageBox-bus" class="messages" style="display: none;">
+    <div id="messageBox-bus" class="messages" style="display: none;" aria-live="assertive">
         <p class='bus'></p>
     </div>
-    <div id="messageBox-bike" class="messages" style="display: none;">
+    <div id="messageBox-bike" class="messages" style="display: none;" aria-live="assertive">
         <p class='bike'></p>
     </div>
     <div class="landing">
         <header role="banner">
             <h1>City &#8226 Mode</h1>
         </header>
-        <form id="query">
+        <form id="query" role="search">
             <h2>Find public transportation, wherever you are</h2>
-            <fieldset id="fieldsetAccess">
+            <fieldset id="fieldsetAccess1">
                 <legend>Find public transportation form</legend>
                 <button class="currentLocation">Show Current Location</button>
                 <p>or</p>
@@ -35,20 +35,20 @@
             </fieldset>
         </form>
     </div>
-    <main role="main">
+    <main role="main" role="search">
         <section>
             <div id="map" class="map"></div>
             <div id='instructions'></div>
         </section>
         <form id="directions">
-            <fieldset id="fieldsetAccess">
+            <fieldset id="fieldsetAccess2">
                 <legend>Get Directions Form</legend>
                 <p>Enter a Destination to obtain a Route</p>
                 <p>***Beta Testing - Not Complete***</p>
                 <div class='directions'></div>
             </fieldset>
         </form>
-        <section class="listings">
+        <section class="listings" aria-live="polite">
             <section class="bus-listings"></section>
             <section class="bike-listings"></section>
         </section>
