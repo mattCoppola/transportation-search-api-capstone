@@ -1,6 +1,6 @@
 # City • Mode | Thinkful API Capstone
 ## Project Description
-This app provides a user the ability to quickly locate the nearest bikeshare stations and bustops around their current location.  Selecting a Marker Icon or Selection in the Listings tab will provide more information on the selected mode.
+This app provides a user the ability to quickly locate the nearest bikeshare stations and bustops around their current location.  They can also search for a specific address or landmark to see these transportation modes too.  Selecting a Marker Icon or Selection in the Listings tab will provide more information on the selected mode.
 
 Along with Mapbox, this app uses two API's:  Transitland and Coord
 * [Mapbox](https://www.mapbox.com/ "Mapbox Homepage")
@@ -43,7 +43,7 @@ As a user I want to be able to select my mode of transportation and search for m
 
 ## Development Road Map
 Features for future updates include:
-* Ability to obtain directions by selecting the finding 'Get Directions' link
+* Ability to obtain directions by selecting the listing's 'Get Directions' link
 * Clicking on a Map Marker will expand the selection on the Findings section
 * Add filter to only return one mode of transportation
 * Add additional modes of transportation (Rail, Boat, Air)
