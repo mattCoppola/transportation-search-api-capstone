@@ -25,8 +25,8 @@ function displayBikeError(message) {
 };
 
 // Listen for 'Show Current Location' Button Click
-$('.currentLocation').on('click', function (event) {
-    event.preventDefault();
+$('.currentLocation').on('click', function (e) {
+    e.preventDefault();
     removeBikeLayers();
     removeBusLayers();
     getBusData(currentLat, currentLong, displayBusAPI);
