@@ -25,7 +25,7 @@ function displayBikeError(message) {
 };
 
 // Listen for 'Show Current Location' Button Click
-$('.currentLocation').on('click', function () {
+$('.currentLocation').on('click', function (event) {
     event.preventDefault();
     removeBikeLayers();
     removeBusLayers();
@@ -404,7 +404,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dGNvcHBvbGEiLCJhIjoiY2ptb3ZsdmFuMTh1YTNrb
 
 map = new mapboxgl.Map({
     container: 'map', // container id
-//    style: 'mapbox://styles/mapbox/streets-v9',
+    //    style: 'mapbox://styles/mapbox/streets-v9',
     style: 'mapbox://styles/mattcoppola/cjncdq5cp0k7r2rqjy96nfxv3',
     //    style: 'mapbox://styles/mattcoppola/cjn3eukxx08912ro6xi9ci950',
     //    style: 'mapbox://styles/mattcoppola/cjn3eql0a008w2rpjazs9vkim',
