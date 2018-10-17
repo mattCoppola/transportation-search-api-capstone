@@ -7,6 +7,8 @@ Along with Mapbox, this app uses two API's:  Transitland and Coord
 * [Transitland](https://transit.land/ "Transitland Homepage")
 * [Coord](https://coord.co/ "Coord Homepage")
 
+### [*** Live Preview ***](https://mattcoppola.github.io/transportation-search-api-capstone/)
+
 ## User Stories
 * As a user I want to load the app and show my current location
 * As a user I want to also be able to enter a different location to find the nearest bike stations and bus stops
@@ -41,12 +43,6 @@ As a user I want to be able to select my mode of transportation and search for m
 
 ![Directions Form](sketches/directions-form.jpg)
 
-## Development Road Map
-Features for future updates include:
-* Ability to obtain directions by selecting the listing's 'Get Directions' link
-* Clicking on a Map Marker will expand the selection on the Findings section
-* Add filter to only return one mode of transportation
-* Add additional modes of transportation (Rail, Boat, Air)
 
 ## Technical
 #### Front End
@@ -57,3 +53,10 @@ Features for future updates include:
 
 #### Responsive
 This app is designed to be responsive to smaller screens using media queries
+
+## Development Road Map
+Features for future updates include:
+* Ability to obtain directions by selecting the listing's 'Get Directions' link
+* Clicking on a Map Marker will expand the selection on the Findings section
+* Add filter to only return one mode of transportation
+* Add additional modes of transportation (Rail, Boat, Air)
