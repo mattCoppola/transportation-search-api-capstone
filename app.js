@@ -159,8 +159,8 @@ function renderBikeListings(listing, index) {
     }
     htmlOutput += `</div>`;
     htmlOutput += `</div>`;
-    htmlOutput += `<div class="get-directions">`;
-    htmlOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
+//    htmlOutput += `<div class="get-directions">`;
+//    htmlOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
     htmlOutput += `</div>`;
     htmlOutput += `</li>`;
 
@@ -300,8 +300,8 @@ function renderBusListings(listing, index) {
     }
     busHTMLOutput += `</div>`;
     busHTMLOutput += `</div>`;
-    busHTMLOutput += `<div class="get-directions">`;
-    busHTMLOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
+//    busHTMLOutput += `<div class="get-directions">`;
+//    busHTMLOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
     busHTMLOutput += `</div>`;
     busHTMLOutput += `</li>`;
 
@@ -526,91 +526,91 @@ navigator.geolocation.getCurrentPosition(success, error, options);
 //***** Directions Functions - WORK IN PROGRESS - NOT FULLY FUNCTIONAL *****
 /***************************************************************************/
 
-$('.listings').on('click', '.get-directions a', function () {
-    let Coords = $(this, 'data-id').data()
-    startCoord = Object.values(Coords).toString().split(',');
-    $('#directions').css('visibility', 'visible');
-});
-
-var directions = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken
-});
-
-document.getElementById('directions').appendChild(directions.onAdd(map));
-
-
-directions.on('result', function (ev) {
-    let directionsCoord = (ev.result.geometry.coordinates);
-    if (DIRECTIONSCOORD === directionsCoord) {
-        console.log('first directions catch', DIRECTIONSCOORD, directionsCoord);
-    } else {
-        DIRECTIONSCOORD = directionsCoord;
-        getRoute(startCoord, directionsCoord);
-        $('.mapboxgl-ctrl-geocoder input').val('');
-        $('.listings').css('visibility', 'hidden');
-        $('.directions').hide();
-    }
-});
-
-function getRoute(startCoord, directionsCoord) {
-    let start = startCoord;
-    let end = directionsCoord;
-    let directionsRequest = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-    $.ajax({
-        method: 'GET',
-        url: directionsRequest,
-    }).done(function (data) {
-        let route = data.routes[0].geometry;
-        map.addLayer({
-            id: 'route',
-            type: 'line',
-            source: {
-                type: 'geojson',
-                data: {
-                    type: 'Feature',
-                    geometry: route
-                }
-            },
-            paint: {
-                'line-width': 2
-            }
-        });
-        map.addLayer({
-            id: 'start',
-            type: 'circle',
-            source: {
-                type: 'geojson',
-                data: {
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: start
-                    }
-                }
-            }
-        });
-        map.addLayer({
-            id: 'end',
-            type: 'circle',
-            source: {
-                type: 'geojson',
-                data: {
-                    type: 'Feature',
-                    geometry: {
-                        type: 'Point',
-                        coordinates: end
-                    }
-                }
-            }
-        });
-        let instructions = document.getElementById('instructions');
-        let steps = data.routes[0].legs[0].steps;
-        steps.forEach(function (step) {
-            instructions.insertAdjacentHTML('beforeend', '<p>' + step.maneuver.instruction + '</p>');
-        });
-    });
-
-    $('#directions').css('visibility', 'hidden');
-    $('#instructions').css('visibility', 'visible');
-    $(".reset").css('top', '90%');
-}
+//$('.listings').on('click', '.get-directions a', function () {
+//    let Coords = $(this, 'data-id').data()
+//    startCoord = Object.values(Coords).toString().split(',');
+//    $('#directions').css('visibility', 'visible');
+//});
+//
+//var directions = new MapboxGeocoder({
+//    accessToken: mapboxgl.accessToken
+//});
+//
+//document.getElementById('directions').appendChild(directions.onAdd(map));
+//
+//
+//directions.on('result', function (ev) {
+//    let directionsCoord = (ev.result.geometry.coordinates);
+//    if (DIRECTIONSCOORD === directionsCoord) {
+//        console.log('first directions catch', DIRECTIONSCOORD, directionsCoord);
+//    } else {
+//        DIRECTIONSCOORD = directionsCoord;
+//        getRoute(startCoord, directionsCoord);
+//        $('.mapboxgl-ctrl-geocoder input').val('');
+//        $('.listings').css('visibility', 'hidden');
+//        $('.directions').hide();
+//    }
+//});
+//
+//function getRoute(startCoord, directionsCoord) {
+//    let start = startCoord;
+//    let end = directionsCoord;
+//    let directionsRequest = 'https://api.mapbox.com/directions/v5/mapbox/cycling/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+//    $.ajax({
+//        method: 'GET',
+//        url: directionsRequest,
+//    }).done(function (data) {
+//        let route = data.routes[0].geometry;
+//        map.addLayer({
+//            id: 'route',
+//            type: 'line',
+//            source: {
+//                type: 'geojson',
+//                data: {
+//                    type: 'Feature',
+//                    geometry: route
+//                }
+//            },
+//            paint: {
+//                'line-width': 2
+//            }
+//        });
+//        map.addLayer({
+//            id: 'start',
+//            type: 'circle',
+//            source: {
+//                type: 'geojson',
+//                data: {
+//                    type: 'Feature',
+//                    geometry: {
+//                        type: 'Point',
+//                        coordinates: start
+//                    }
+//                }
+//            }
+//        });
+//        map.addLayer({
+//            id: 'end',
+//            type: 'circle',
+//            source: {
+//                type: 'geojson',
+//                data: {
+//                    type: 'Feature',
+//                    geometry: {
+//                        type: 'Point',
+//                        coordinates: end
+//                    }
+//                }
+//            }
+//        });
+//        let instructions = document.getElementById('instructions');
+//        let steps = data.routes[0].legs[0].steps;
+//        steps.forEach(function (step) {
+//            instructions.insertAdjacentHTML('beforeend', '<p>' + step.maneuver.instruction + '</p>');
+//        });
+//    });
+//
+//    $('#directions').css('visibility', 'hidden');
+//    $('#instructions').css('visibility', 'visible');
+//    $(".reset").css('top', '90%');
+//}
