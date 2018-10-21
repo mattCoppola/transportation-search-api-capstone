@@ -15,10 +15,10 @@
 
 <body>
     <div aria-live="assertive" id="messageBox-bus" class="messages" style="display: none;">
-        <p class='bus'></p>
+        <p aria-live="assertive" class='bus'></p>
     </div>
-    <div aria-live="assertive" id="messageBox-bike" class="messages" style="display: none;" aria-live="assertive">
-        <p class='bike'></p>
+    <div aria-live="assertive" id="messageBox-bike" class="messages" style="display: none;">
+        <p aria-live="assertive" class='bike'></p>
     </div>
     <div class="landing">
         <header role="banner">
@@ -35,12 +35,13 @@
             </fieldset>
         </form>
     </div>
-    <main role="main" role="search">
+    <main role="main">
         <section>
             <div id="map" class="map"></div>
             <div id='instructions'></div>
         </section>
-        <form id="directions">
+        <!-- DIRECTION SECTION - FUTURE FEATURE - SEE ROADMAP
+        <form id="directions" role="search">
             <fieldset id="fieldsetAccess2">
                 <legend>Get Directions Form</legend>
                 <p>Enter a Destination to obtain a Route</p>
@@ -48,6 +49,7 @@
                 <div class='directions'></div>
             </fieldset>
         </form>
+-->
         <section aria-live="assertive" class="listings">
             <section aria-live="assertive" class="bus-listings"></section>
             <section aria-live="assertive" class="bike-listings"></section>

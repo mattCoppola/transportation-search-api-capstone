@@ -29,14 +29,12 @@ input {
 
 header {
     text-shadow: 1px 1px 0px #fff, 2px 2px 0px rgba(0, 0, 0, 0.15);
-
 }
 
 h1 {
     color: #2a2a2a;
     font-size: 3em;
 }
-
 
 ul {
     padding: 0;
@@ -126,6 +124,10 @@ form {
 
 .currentLocation:hover {
     background-color: #c3d4d4;
+}
+
+.mapboxgl-ctrl-geocoder {
+    background-color: #ecf0f1;
 }
 
 input#location {

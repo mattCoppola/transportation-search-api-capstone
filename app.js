@@ -58,7 +58,7 @@ $('.reset').on('click', function () {
 // ************** BIKE FUNCTIONS ************** //
 // Add Bike icons to map and set Bike Markers
 function displayBikeAPI(data) {
-    console.log('Bike Data:', data);
+    //    console.log('Bike Data:', data);
     if (data.features === null) {
         displayBikeError('No Bike Data Available for this location.');
         removeBikeLayers();
@@ -126,14 +126,14 @@ function getBikeData(lat, lon, callback) {
         longitude: lon
     }
     $.getJSON(bikeURL, query, function () {
-            console.log('Bike API starting...');
+            //            console.log('Bike API starting...');
         })
         .done(callback)
         .fail(function () {
             console.log('error');
         })
         .always(function () {
-            console.log('Bike API complete');
+            //            console.log('Bike API complete');
         })
 }
 
@@ -159,8 +159,8 @@ function renderBikeListings(listing, index) {
     }
     htmlOutput += `</div>`;
     htmlOutput += `</div>`;
-//    htmlOutput += `<div class="get-directions">`;
-//    htmlOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
+    //    htmlOutput += `<div class="get-directions">`;
+    //    htmlOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
     htmlOutput += `</div>`;
     htmlOutput += `</li>`;
 
@@ -192,7 +192,7 @@ function flyToBike(data) {
 // ************** BUS FUNCTIONS ************** //
 // Add Bus icons to map and set Bus Markers
 function displayBusAPI(data) {
-    console.log('Bus Data: ', data);
+    //    console.log('Bus Data: ', data);
     if (!data.features.length) {
         displayBusError('No Bus Data Available for this location.');
         removeBusLayers();
@@ -264,14 +264,14 @@ function getBusData(lat, lon, callback) {
         total: 'true'
     }
     $.getJSON(busURL, query, function () {
-            console.log('Bus API starting...');
+            //            console.log('Bus API starting...');
         })
         .done(callback)
         .fail(function () {
             console.log('error');
         })
         .always(function () {
-            console.log('Bus API complete');
+            //            console.log('Bus API complete');
         });
 }
 
@@ -300,8 +300,8 @@ function renderBusListings(listing, index) {
     }
     busHTMLOutput += `</div>`;
     busHTMLOutput += `</div>`;
-//    busHTMLOutput += `<div class="get-directions">`;
-//    busHTMLOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
+    //    busHTMLOutput += `<div class="get-directions">`;
+    //    busHTMLOutput += `<a data-id=${listing.geometry.coordinates} href="#">Get Directions</a>`;
     busHTMLOutput += `</div>`;
     busHTMLOutput += `</li>`;
 
@@ -404,10 +404,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWF0dGNvcHBvbGEiLCJhIjoiY2ptb3ZsdmFuMTh1YTNrb
 
 map = new mapboxgl.Map({
     container: 'map', // container id
-    //    style: 'mapbox://styles/mapbox/streets-v9',
     style: 'mapbox://styles/mattcoppola/cjncdq5cp0k7r2rqjy96nfxv3',
-    //    style: 'mapbox://styles/mattcoppola/cjn3eukxx08912ro6xi9ci950',
-    //    style: 'mapbox://styles/mattcoppola/cjn3eql0a008w2rpjazs9vkim',
     center: [currentLong, currentLat], // starting position [lng, lat]
     zoom: 10 // starting zoom
 });
