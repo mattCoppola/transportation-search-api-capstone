@@ -3,8 +3,8 @@ const busURL = 'https://transit.land/api/v1/stops.geojson';
 const bikeURL = 'https://api.coord.co/v1/sv/location';
 let currentLat = '41.8781'; //center on Chicago on App Load
 let currentLong = '-87.6298';
-let busLayer = 'busses'; // set global bus layer
-let bikeLayer = 'bikes'; // set global bike layer
+let busLayer = 'busses'; // set global bus layer (Mapbox)
+let bikeLayer = 'bikes'; // set global bike layer (Mapbox)
 let COORD = ''; //capturing geocoding first result (landing search)
 let DIRECTIONSCOORD = ''; //capturing geocoding first result (directions search)
 let startCoord = ''; //initialize for directions
@@ -39,7 +39,7 @@ $('.currentLocation').on('click', function (e) {
     });
 });
 
-// reset Map and return to Landing Page
+// reset Map and return to Landing Page on Reset Button Click
 $('.reset').on('click', function () {
     $('.mapboxgl-popup').remove();
     $('.landing').show();
@@ -201,7 +201,7 @@ function displayBusAPI(data) {
         $('.reset').show();
         $('#map').css('opacity', '1');
         displayBusListings(data);
-        // Add the data to your map as a layer
+        // Remove existing map layers, add the data to your map as a layer
         removeBusLayers();
         map.addLayer({
             id: 'busses',

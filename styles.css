@@ -37,6 +37,7 @@ h1 {
 }
 
 ul {
+    margin-top: 0;
     padding: 0;
     list-style: none;
 }
@@ -174,6 +175,13 @@ input#location {
     color: black;
     background-color: #ecf0f1;
     visibility: hidden;
+}
+
+.listings h2 {
+    text-align: center;
+    margin-bottom: 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid black;
 }
 
 .listings li {
@@ -327,7 +335,7 @@ geocoder {
     }
 
     .reset {
-        top: 66%;
+        top: 64%;
         left: 85%;
     }
 }
